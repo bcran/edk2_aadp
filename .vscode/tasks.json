@@ -1,0 +1,31 @@
+{
+    // See https://go.microsoft.com/fwlink/?LinkId=733558
+    // for the documentation about the tasks.json format
+    "version": "2.0.0",
+    "tasks": [
+        {
+            "label": "makeJade",
+            "type": "shell",
+            "command": "bash make_jade.sh",
+            "problemMatcher": [],
+            "group": "build"
+        },
+        {
+            "label": "makeComHpcAlt",
+            "type": "shell",
+            "command": "bash make_ComHpcAlt.sh",
+            "problemMatcher": [],
+            "group": {
+                "kind": "build",
+                "isDefault": true
+            }
+        },
+        {
+            "label": "clean",
+            "type": "shell",
+            "command": "bash clean.sh",
+            "problemMatcher": [],
+            "group": "build"
+        }
+    ]
+}

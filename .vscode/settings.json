@@ -1,0 +1,12 @@
+{
+    "files.associations": {
+        "ipmissifdxe.h": "c"
+    },
+    "files.watcherExclude": {
+        "**/BaseTools/**": true,
+        "**/mainboards/**": true,
+        "**/toolchain/**": true,
+        "Build/**": true,
+        "BUILDS/**": true
+    }
+}

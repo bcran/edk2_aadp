@@ -1,0 +1,6 @@
+# folders
+Build/
+BUILDS/
+edk2-ampere-tools/toolchain/
+# files
+initramfs.cpio
