@@ -38,6 +38,6 @@ make -f $WORKSPACE/edk2-ampere-tools/Makefile \
     LINUXBOOT_BIN=$WORKSPACE/flashkernel \
     SPI_SIZE_MB=32 \
     DEBUG=0 \
-    VER=1.07 BUILD=300.04$BUILD_NUMBER_EXT \
+    VER=2.04 BUILD=100.00$BUILD_NUMBER_EXT \
     tianocore_capsule # tianocore_img # linuxboot_img # all # 
 export PATH=$OPATH
