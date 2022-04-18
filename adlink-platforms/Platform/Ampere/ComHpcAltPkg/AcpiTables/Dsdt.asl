@@ -193,6 +193,38 @@ DefinitionBlock("Dsdt.aml", "DSDT", 0x02, "Ampere", "Jade", 1) {
         )
         Interrupt(ResourceConsumer, Level, ActiveHigh, Exclusive) { 110 }
       })
+      Device (IPI) {
+        Name(_HID, "AMPC0004")
+        Name(_CID, "IPI0001")
+        Name(_STR, Unicode("IPMI_SSIF"))
+        Name(_UID, 0)
+        Name(_CCA, ONE)
+        Method(_STA, 0, NotSerialized) {
+          Return (0x0f)
+        }
+        Method(_IFT) {
+          Return(0x04) // IPMI SSIF
+        }
+        Method(_ADR) {
+          Return(0x10) // SSIF slave address
+        }
+        Method(_SRV) {
+          Return(0x0200) // IPMI Specification Revision
+        }
+        Name(_CRS, ResourceTemplate ()
+        {
+          I2cSerialBusV2 (0x0010, ControllerInitiated, 0x00061A80,
+            AddressingMode7Bit, "\\_SB.I2C9",
+            0x00, ResourceConsumer,, Exclusive,
+            // Vendor specific data:
+            // "BMC0",
+            // Flags (2 bytes): SMBUS variable length (Bit 0), Read Checksum (Bit 1), Verify Checksum (Bit 2)
+            RawDataBuffer () { 0x42, 0x4D, 0x43, 0x30, 0x7, 0x0 }
+            )
+        })
+      }
+      Name(SSCN, Package() { 0x3E2, 0x47D, 0 })
+      Name(FMCN, Package() { 0xA4, 0x13F, 0 })
     }
 
     //

@@ -57,7 +57,7 @@ FV = FVMAIN_COMPACT
 #
 # NV Variables
 # Offset: 0x00740000
-# Size:   0x00080000
+# Size:   0x00030000
 #
 0x00740000|0x00030000
 gEfiMdeModulePkgTokenSpaceGuid.PcdFlashNvStorageVariableBase64|gEfiMdeModulePkgTokenSpaceGuid.PcdFlashNvStorageVariableSize
@@ -77,8 +77,8 @@ DATA = {
   0x5f, 0x46, 0x56, 0x48, 0xff, 0xfe, 0x04, 0x00,
   # HeaderLength # CheckSum # ExtHeaderOffset #Reserved #Revision
   0x48, 0x00, 0x2D, 0x09, 0x00, 0x00, 0x00, 0x02,
-  # Blockmap[0]: 0x2 Blocks * 0x40000 Bytes / Block
-  0x02, 0x00, 0x00, 0x00, 0x00, 0x00, 0x04, 0x00,
+  # Blockmap[0]: 0x3 Blocks * 0x10000 Bytes / Block
+  0x03, 0x00, 0x00, 0x00, 0x00, 0x00, 0x01, 0x00,
   # Blockmap[1]: End
   0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
   ## This is the VARIABLE_STORE_HEADER
@@ -92,6 +92,8 @@ DATA = {
   #         0x48 (size of EFI_FIRMWARE_VOLUME_HEADER) = 0x2FFB8
   # This can speed up the Variable Dispatch a bit.
   0xB8, 0xFF, 0x02, 0x00,
+  # # 0x02ffb8 --> 0x01ffb8
+  # 0xB8, 0xFF, 0x01, 0x00,
   # FORMATTED: 0x5A #HEALTHY: 0xFE #Reserved: UINT16 #Reserved1: UINT32
   0x5A, 0xFE, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00
 }
@@ -153,8 +155,7 @@ APRIORI PEI {
   INF UefiCpuPkg/CpuIoPei/CpuIoPei.inf
   INF ArmPlatformPkg/PlatformPei/PlatformPeim.inf
   INF Silicon/Ampere/AmpereAltraPkg/Drivers/ATFHobPei/ATFHobPeim.inf
-  INF Silicon/Ampere/AmpereAltraPkg/Drivers/MemoryInitPeim/MemoryInitPeim.inf
-  INF Silicon/Ampere/AmpereAltraPkg/Drivers/MmCommunicationPei/MmCommunicationPei.inf
+  INF ArmPlatformPkg/MemoryInitPei/MemoryInitPeim.inf
   INF Silicon/Ampere/AmpereAltraPkg/Drivers/FlashPei/FlashPei.inf
   INF Silicon/Ampere/AmpereAltraPkg/Drivers/BootProgress/BootProgressPeim/BootProgressPeim.inf
   INF ArmPkg/Drivers/CpuPei/CpuPei.inf
@@ -163,6 +164,7 @@ APRIORI PEI {
   INF MdeModulePkg/Universal/Variable/Pei/VariablePei.inf
   INF MdeModulePkg/Universal/ReportStatusCodeRouter/Pei/ReportStatusCodeRouterPei.inf
   INF MdeModulePkg/Universal/StatusCodeHandler/Pei/StatusCodeHandlerPei.inf
+  INF Silicon/Ampere/AmpereAltraPkg/Drivers/PcieInitPei/PcieInitPei.inf
 
 !if $(TPM2_ENABLE) == TRUE
   INF MdeModulePkg/Universal/ResetSystemPei/ResetSystemPei.inf
@@ -207,8 +209,10 @@ APRIORI DXE {
   INF MdeModulePkg/Universal/PCD/Dxe/Pcd.inf
   INF MdeModulePkg/Universal/ReportStatusCodeRouter/RuntimeDxe/ReportStatusCodeRouterRuntimeDxe.inf
   INF MdeModulePkg/Universal/StatusCodeHandler/RuntimeDxe/StatusCodeHandlerRuntimeDxe.inf
-  INF Silicon/Ampere/AmpereAltraPkg/Drivers/MmCommunicationDxe/MmCommunication.inf
+  INF ArmPkg/Drivers/CpuDxe/CpuDxe.inf
+  INF ArmPkg/Drivers/MmCommunicationDxe/MmCommunication.inf
   INF Silicon/Ampere/AmpereAltraPkg/Drivers/FlashFvbDxe/FlashFvbDxe.inf
+  INF ArmPkg/Drivers/ArmGic/ArmGicDxe.inf
 }
 
   INF MdeModulePkg/Core/Dxe/DxeMain.inf
@@ -225,14 +229,16 @@ APRIORI DXE {
   INF MdeModulePkg/Universal/SecurityStubDxe/SecurityStubDxe.inf
   INF MdeModulePkg/Universal/CapsuleRuntimeDxe/CapsuleRuntimeDxe.inf
 !if $(SECURE_BOOT_ENABLE) == TRUE
+!include Platform/Ampere/AmperePlatformPkg/SecureBootDefaultKeys.fdf.inc
   INF SecurityPkg/VariableAuthenticated/SecureBootConfigDxe/SecureBootConfigDxe.inf
+  INF SecurityPkg/VariableAuthenticated/SecureBootDefaultKeysDxe/SecureBootDefaultKeysDxe.inf
 !endif
   INF MdeModulePkg/Universal/MonotonicCounterRuntimeDxe/MonotonicCounterRuntimeDxe.inf
-  INF EmbeddedPkg/ResetRuntimeDxe/ResetRuntimeDxe.inf
+  INF MdeModulePkg/Universal/ResetSystemRuntimeDxe/ResetSystemRuntimeDxe.inf
   INF EmbeddedPkg/RealTimeClockRuntimeDxe/RealTimeClockRuntimeDxe.inf
   INF EmbeddedPkg/MetronomeDxe/MetronomeDxe.inf
   INF MdeModulePkg/Universal/HiiDatabaseDxe/HiiDatabaseDxe.inf
-  INF Silicon/Ampere/AmpereAltraPkg/Drivers/MmCommunicationDxe/MmCommunication.inf
+  INF ArmPkg/Drivers/MmCommunicationDxe/MmCommunication.inf
 
   #
   # Fixup memory map
@@ -263,7 +269,7 @@ APRIORI DXE {
   #
   # FailSafe and Watchdog Timer
   #
-  INF Platform/Ampere/AmperePlatformPkg/Drivers/FailSafeDxe/FailSafeDxe.inf
+  INF Silicon/Ampere/AmpereAltraPkg/Drivers/FailSafeDxe/FailSafeDxe.inf
 
   #
   # ARM GIC Dxe
@@ -311,7 +317,8 @@ APRIORI DXE {
   # PCIe Support
   #
   INF MdeModulePkg/Bus/Pci/PciBusDxe/PciBusDxe.inf
-  INF Silicon/Ampere/AmpereAltraPkg/Bus/Pci/PciHostBridgeDxe/PciHostBridgeDxe.inf
+  INF MdeModulePkg/Bus/Pci/PciHostBridgeDxe/PciHostBridgeDxe.inf
+  INF Platform/Ampere/JadePkg/Drivers/PciPlatformDxe/PciPlatformDxe.inf
 
   #
   # Network PCIe I210
@@ -377,6 +384,7 @@ APRIORI DXE {
   INF Platform/Ampere/JadePkg/Drivers/AcpiPlatformDxe/AcpiPlatformDxe.inf
   INF RuleOverride=ACPITABLE Silicon/Ampere/AmpereAltraPkg/AcpiCommonTables/AcpiCommonTables.inf
   INF RuleOverride=ACPITABLE Platform/Ampere/ComHpcAltPkg/AcpiTables/AcpiTables.inf
+  INF RuleOverride=ACPITABLE Platform/Ampere/JadePkg/Ac02AcpiTables/Ac02AcpiTables.inf
 
   #
   # SMBIOS
@@ -398,6 +406,11 @@ APRIORI DXE {
       }
 
   #
+  # Enroll Ampere Secure Key
+  #
+  INF Silicon/Ampere/AmpereAltraPkg/Application/EnrollAmpereSecureKey/EaskDynamicCommand.inf
+
+  #
   # HII
   #
   INF Silicon/Ampere/AmpereAltraPkg/Drivers/PlatformInfoDxe/PlatformInfoDxe.inf
@@ -408,11 +421,11 @@ APRIORI DXE {
   INF Silicon/Ampere/AmpereAltraPkg/Drivers/WatchdogConfigDxe/WatchdogConfigDxe.inf
   INF Silicon/Ampere/AmpereAltraPkg/Drivers/PcieDeviceConfigDxe/PcieDeviceConfigDxe.inf
   #INF Silicon/Ampere/AmpereSiliconPkg/Drivers/BmcInfoScreenDxe/BmcInfoScreenDxe.inf
+  INF Silicon/Ampere/AmpereAltraPkg/Drivers/RootComplexConfigDxe/RootComplexConfigDxe.inf
 
   #
   # Misc
   #
-  INF Platform/Ampere/ComHpcAltPkg/Drivers/BootOptionsRecoveryDxe/BootOptionsRecoveryDxe.inf
   INF Silicon/Ampere/AmpereAltraPkg/Drivers/IpmiBootDxe/IpmiBootDxe.inf
 
   #
@@ -430,6 +443,11 @@ APRIORI DXE {
 !if $(REDFISH_ENABLE) == TRUE
   INF Platform/Ampere/JadePkg/Drivers/SmbiosType42Dxe/SmbiosType42Dxe.inf
 !endif
+
+  #
+  # Platform Boot Manager
+  #
+  INF Platform/Ampere/AmperePlatformPkg/Drivers/PlatformBootManagerDxe/PlatformBootManagerDxe.inf
 
 [FV.SystemFirmwareDescriptor]
 FvAlignment        = 8
@@ -471,5 +489,5 @@ READ_LOCK_STATUS   = TRUE
 
   INF  SignedCapsulePkg/Universal/SystemFirmwareUpdate/SystemFirmwareUpdateDxe.inf
 
-!include Platform/Ampere/AmperePlatformPkg/FvRules.fdf.inc
+!include Silicon/Ampere/AmpereSiliconPkg/FvRules.fdf.inc
 !include Drivers/RenesasFirmwarePD720202/RenesasFvRules.fdf.inc

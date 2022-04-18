@@ -31,8 +31,8 @@ make -f $WORKSPACE/edk2-ampere-tools/Makefile \
     VM_SHARED_DIR=$HOME/AmpereR \
     CHECKSUM_TOOL=$OEM_SRC_DIR/toolchain/checksum \
     PACKAGES_PATH=$OEM_SRC_DIR:$WORKSPACE/OpenPlatformPkg:"${PACKAGES_PATH}" \
-    ATF_SLIM=$WORKSPACE/AmpereAltra-ATF-SCP/atf/altra_atf_signed_1.07.20210713.slim \
-    SCP_SLIM=$WORKSPACE/AmpereAltra-ATF-SCP/scp/altra_scp_signed_1.07.20210713.slim \
+    ATF_SLIM=$WORKSPACE/AmpereAltra-ATF-SCP/atf/altra_atf_signed_2.06.20220308.slim \
+    SCP_SLIM=$WORKSPACE/AmpereAltra-ATF-SCP/scp/altra_scp_signed_2.06.20220308.slim \
     FAILSAFE_WORKAROUND=$FAILSAFE_WORKAROUND \
     BOARD_SETTING=$BOARD_SETTING \
     LINUXBOOT_BIN=$WORKSPACE/flashkernel \

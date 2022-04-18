@@ -27,10 +27,12 @@
   Silicon/Ampere/AmpereSiliconPkg/AmpereSiliconPkg.dec
 
 [LibraryClasses]
+  AmpereCpuLib
   BaseLib
   BaseMemoryLib
   DebugLib
   HobLib
+  IOExpanderLib
   IpmiCommandLib
   IpmiLib
   MemoryAllocationLib
@@ -48,6 +50,7 @@
   gAmpereTokenSpaceGuid.PcdSmbiosTables0BiosReleaseDate
   gAmpereTokenSpaceGuid.PcdSmbiosTables1MajorVersion
   gAmpereTokenSpaceGuid.PcdSmbiosTables1MinorVersion
+  gEfiMdeModulePkgTokenSpaceGuid.PcdFirmwareVersionString
 
   gArmTokenSpaceGuid.PcdFdSize
 
@@ -76,7 +79,7 @@
   gAmpereTokenSpaceGuid.PcdFruSystemUniqueID
 
 [Guids]
-  gPlatformHobGuid
+  gPlatformInfoHobGuid
 
 [Depex]
   gEfiSmbiosProtocolGuid
