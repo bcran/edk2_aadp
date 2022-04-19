@@ -83,6 +83,8 @@ FvNameGuid         = 5C60F367-A505-419A-859E-2A4FF6CA6FE5
 
 APRIORI DXE {
   INF MdeModulePkg/Universal/PCD/Dxe/Pcd.inf
+  INF ArmPkg/Drivers/CpuDxe/CpuDxe.inf
+  INF ArmPkg/Drivers/MmCommunicationDxe/MmCommunication.inf
 }
 
   INF MdeModulePkg/Core/Dxe/DxeMain.inf
@@ -100,6 +102,7 @@ APRIORI DXE {
   INF EmbeddedPkg/RealTimeClockRuntimeDxe/RealTimeClockRuntimeDxe.inf
   INF EmbeddedPkg/MetronomeDxe/MetronomeDxe.inf
   INF MdeModulePkg/Universal/HiiDatabaseDxe/HiiDatabaseDxe.inf
+  INF ArmPkg/Drivers/MmCommunicationDxe/MmCommunication.inf
 
   #
   # Environment Variables Protocol
@@ -123,11 +126,6 @@ APRIORI DXE {
   INF ArmPkg/Drivers/ArmGic/ArmGicDxe.inf
 
   #
-  # PCIe Support
-  #
-  INF Silicon/Ampere/AmpereAltraPkg/Bus/Pci/PciHostBridgeDxe/PciHostBridgeDxe.inf
-
-  #
   # SMBus
   #
   INF Silicon/Ampere/AmpereAltraPkg/Drivers/SmbusHcDxe/SmbusHcDxe.inf
@@ -145,12 +143,12 @@ APRIORI DXE {
   #
   # Bds
   #
-  INF MdeModulePkg/Universal/BdsDxe/BdsDxe.inf
+  INF Platform/Ampere/ComHpcAltPkg/Universal/BdsDxe/BdsDxe.inf
 
   #
   # Driver to handle HW Watchdog
   #
-  INF Platform/Ampere/AmperePlatformPkg/Drivers/FailSafeDxe/FailSafeDxe.inf
+  INF Silicon/Ampere/AmpereAltraPkg/Drivers/FailSafeDxe/FailSafeDxe.inf
 
   #
   # ACPI
@@ -159,6 +157,7 @@ APRIORI DXE {
   INF Platform/Ampere/JadePkg/Drivers/AcpiPlatformDxe/AcpiPlatformDxe.inf
   INF RuleOverride=ACPITABLE Silicon/Ampere/AmpereAltraPkg/AcpiCommonTables/AcpiCommonTables.inf
   INF RuleOverride=ACPITABLE Platform/Ampere/ComHpcAltPkg/AcpiTables/AcpiTables.inf
+  INF RuleOverride=ACPITABLE Platform/Ampere/JadePkg/Ac02AcpiTables/Ac02AcpiTables.inf
 
   #
   # SMBIOS
@@ -203,7 +202,8 @@ APRIORI PEI {
   INF UefiCpuPkg/CpuIoPei/CpuIoPei.inf
   INF ArmPlatformPkg/PlatformPei/PlatformPeim.inf
   INF Silicon/Ampere/AmpereAltraPkg/Drivers/ATFHobPei/ATFHobPeim.inf
-  INF Silicon/Ampere/AmpereAltraPkg/Drivers/MemoryInitPeim/MemoryInitPeim.inf
+  INF ArmPlatformPkg/MemoryInitPei/MemoryInitPeim.inf
+  INF Silicon/Ampere/AmpereAltraPkg/Drivers/PcieInitPei/PcieInitPei.inf
   INF ArmPkg/Drivers/CpuPei/CpuPei.inf
   INF MdeModulePkg/Universal/PCD/Pei/Pcd.inf
   INF MdeModulePkg/Universal/Variable/Pei/VariablePei.inf
@@ -216,5 +216,5 @@ APRIORI PEI {
     }
   }
 
-!include Platform/Ampere/AmperePlatformPkg/FvRules.fdf.inc
+!include Silicon/Ampere/AmpereSiliconPkg/FvRules.fdf.inc
 !include Drivers/RenesasFirmwarePD720202/RenesasFvRules.fdf.inc

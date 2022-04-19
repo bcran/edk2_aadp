@@ -9,7 +9,7 @@
 #include <Uefi.h>
 
 #include <Guid/MdeModuleHii.h>
-#include <Guid/PlatformInfoHobGuid.h>
+#include <Guid/PlatformInfoHob.h>
 #include <Library/AmpereCpuLib.h>
 #include <Library/BaseLib.h>
 #include <Library/BaseMemoryLib.h>
@@ -23,14 +23,13 @@
 #include <Library/PrintLib.h>
 #include <Library/UefiBootServicesTableLib.h>
 #include <Library/UefiLib.h>
-#include <PlatformInfoHob.h>
 
 #include "PlatformInfoHii.h"
 
 //
 // uni string and Vfr Binary data.
 //
-extern UINT8 VfrBin[];
+extern UINT8 PlatformInfoVfrBin[];
 extern UINT8 PlatformInfoDxeStrings[];
 
 EFI_HANDLE     mDriverHandle = NULL;
@@ -122,7 +121,7 @@ UpdatePlatformInfoScreen (
   EFI_IFR_GUID_LABEL *EndLabel;
 
   /* Get the Platform HOB */
-  Hob = GetFirstGuidHob (&gPlatformHobGuid);
+  Hob = GetFirstGuidHob (&gPlatformInfoHobGuid);
   if (Hob == NULL) {
     return EFI_DEVICE_ERROR;
   }
@@ -362,7 +361,7 @@ PlatformInfoEntryPoint (
                  &gPlatformInfoFormSetGuid,
                  mDriverHandle,
                  PlatformInfoDxeStrings,
-                 VfrBin,
+                 PlatformInfoVfrBin,
                  NULL
                  );
   if (mHiiHandle == NULL) {
