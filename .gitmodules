@@ -1,14 +1,3 @@
-[submodule "edk2-platforms"]
-	path = edk2-platforms
-	url = https://github.com/AmpereComputing/edk2-platforms.git
-	branch = ampere
-[submodule "edk2"]
-	path = edk2
-	url = https://github.com/AmpereComputing/edk2.git
-	branch = ampere
-[submodule "OpenPlatformPkg"]
-	path = OpenPlatformPkg
-	url = https://github.com/Linaro/OpenPlatformPkg.git
 [submodule "edk2-ampere-tools"]
 	path = edk2-ampere-tools
 	url = https://github.com/ADLINK/edk2-ampere-tools.git
