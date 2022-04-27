@@ -10,3 +10,6 @@
 [submodule "edk2"]
 	path = edk2
 	url = https://github.com/ADLINK/edk2.git
+[submodule "edk2-ampere-tools"]
+	path = edk2-ampere-tools
+	url = https://github.com/ADLINK/edk2-ampere-tools.git

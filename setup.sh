@@ -123,6 +123,26 @@ if [ "eval $(ssh -T git@github.com-adlink | grep -q "authenticated")" != "" ] ; 
   echo "==========================================================================="
   echo "replace HTTPS access with SSH access if authenticated"
   echo "==========================================================================="
+  if [ -d "AmpereAltra-ATF-SCP" ] ; then
+    cd AmpereAltra-ATF-SCP
+    git remote set-url origin git@github.com-adlink:ADLINK/AmpereAltra-ATF-SCP.git
+    cd .. 
+  fi  
+  if [ -d "edk2-platforms" ] ; then
+    cd edk2-platforms
+    git remote set-url origin git@github.com-adlink:ADLINK/edk2-platforms.git
+    cd .. 
+  fi  
+  if [ -d "OpenPlatformPkg" ] ; then
+    cd OpenPlatformPkg
+    git remote set-url origin git@github.com-adlink:ADLINK/OpenPlatformPkg.git
+    cd .. 
+  fi  
+  if [ -d "edk2" ] ; then
+    cd edk2
+    git remote set-url origin git@github.com-adlink:ADLINK/edk2.git
+    cd .. 
+  fi  
   if [ -d "edk2-ampere-tools" ] ; then
     cd edk2-ampere-tools
     git remote set-url origin git@github.com-adlink:ADLINK/edk2-ampere-tools.git
