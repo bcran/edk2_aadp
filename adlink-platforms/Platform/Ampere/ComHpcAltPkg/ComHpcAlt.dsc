@@ -107,6 +107,10 @@
   BoardPcieLib|Platform/Ampere/ComHpcAltPkg/Library/BoardPcieLib/BoardPcieLib.inf
 
   #
+  # Library for POST Code converting
+  #
+  ReportStatusCodeLib|MdeModulePkg/Library/DxeReportStatusCodeLib/DxeReportStatusCodeLib.inf
+  #
   # EFI Redfish drivers
   #
 !if $(REDFISH_ENABLE) == TRUE
@@ -301,6 +305,16 @@
     <LibraryClasses>
       DxeServicesLib|MdePkg/Library/DxeServicesLib/DxeServicesLib.inf
   } 
+
+  #
+  # POST code thru MMC and utilize Intel POST code map
+  #
+  MdeModulePkg/Universal/StatusCodeHandler/RuntimeDxe/StatusCodeHandlerRuntimeDxe.inf {
+    <LibraryClasses>
+      PostCodeLib|Library/PostCodeLibMmc/PostCodeLibMmc.inf
+      MmcLib|Library/MmcLib/MmcLib.inf
+      PostCodeMapLib|PostCodeDebugFeaturePkg/Library/PostCodeMapLib/PostCodeMapLib.inf
+  }
 
   #
   # Redfish
