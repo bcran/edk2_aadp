@@ -115,7 +115,11 @@
   # MMC library
   #
   MmcLib|Library/MmcLib/MmcLib.inf
-  
+
+  #
+  # Library for POST Code converting
+  #
+  ReportStatusCodeLib|MdeModulePkg/Library/DxeReportStatusCodeLib/DxeReportStatusCodeLib.inf
   #
   # EFI Redfish drivers
   #
