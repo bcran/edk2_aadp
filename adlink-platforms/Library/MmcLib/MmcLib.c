@@ -27,7 +27,6 @@ MmcPostCode (
   AsciiSPrint ((CHAR8 *)IpmiCmdBuf, sizeof(IpmiCmdBuf), "[C0 00 80 %2X]\r\n", (UINT8)Value);
 
   numofbytes = PL011UartWrite ((UINTN)PcdGet64 (PcdSerialDbgRegisterBase), IpmiCmdBuf, IpmiCmdBufSize);
-  DEBUG ((DEBUG_INFO, "%a numofbytes %d\n", __FUNCTION__,numofbytes));
 
   if (numofbytes == 0) {
     DEBUG ((DEBUG_ERROR, "%a Failed to Write MMC POST code data\n", __FUNCTION__));
