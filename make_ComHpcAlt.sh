@@ -23,6 +23,9 @@ else
     BOARD_SETTING=$OEM_SRC_DIR/Platform/Ampere/ComHpcAltPkg/ComHpcAltBoardSetting.cfg
 fi    
 
+VER=2.04
+BUILD=100.01$BUILD_NUMBER_EXT
+
 make -f $WORKSPACE/edk2-ampere-tools/Makefile \
     PROGRAMMER_TOOL=$PROGRAMMER_TOOL \
     POWER_SCRIPT=$OEM_SRC_DIR/toolchain/target_power.sh \
@@ -38,6 +41,15 @@ make -f $WORKSPACE/edk2-ampere-tools/Makefile \
     LINUXBOOT_BIN=$WORKSPACE/flashkernel \
     SPI_SIZE_MB=32 \
     DEBUG=0 \
-    VER=2.04 BUILD=100.01$BUILD_NUMBER_EXT \
+    VER=$VER BUILD=$BUILD \
     tianocore_capsule # tianocore_img # linuxboot_img # all # 
+
+make -f $WORKSPACE/edk2-ampere-tools/Makefile \
+    EDK2_PLATFORMS_PKG_DIR=$EDK2_PLATFORMS_PKG_DIR \
+    BOARD_NAME=$BOARD_NAME \
+    VM_SHARED_DIR=$HOME/AmpereR \
+    CHECKSUM_TOOL=$OEM_SRC_DIR/toolchain/checksum \
+    SPI_SIZE_MB=32 \
+    VER=$VER BUILD=$BUILD \
+    history
 export PATH=$OPATH
