@@ -1,0 +1,23 @@
+## @file  Adlink.dec
+#
+##
+
+
+[Defines]
+  DEC_SPECIFICATION              = 0x00010005
+  PACKAGE_NAME                   = Adlink
+  PACKAGE_UNI_FILE               = Adlink.uni
+  PACKAGE_GUID                   = 1096F9A2-A9B1-4096-90DC-7CFC06D73A21
+  PACKAGE_VERSION                = 1.08
+
+
+[Includes]
+  Include
+
+[LibraryClasses]
+  ##  @libraryclass  
+  ##
+  MmcLib|Include/Library/MmcLib.h
+
+  ##  @libraryclass  
+  PostCodeLib|Include/Library/PostLib.h

@@ -107,6 +107,16 @@
   BoardPcieLib|Platform/Ampere/ComHpcAltPkg/Library/BoardPcieLib/BoardPcieLib.inf
 
   #
+  # Post Code library utilize MMC library
+  #
+  PostCodeLib|Library/PostCodeLibMmc/PostCodeLibMmc.inf
+
+  #
+  # MMC library
+  #
+  MmcLib|Library/MmcLib/MmcLib.inf
+  
+  #
   # EFI Redfish drivers
   #
 !if $(REDFISH_ENABLE) == TRUE
