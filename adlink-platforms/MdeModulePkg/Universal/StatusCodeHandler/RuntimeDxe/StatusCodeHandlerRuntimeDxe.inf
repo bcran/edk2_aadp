@@ -33,6 +33,8 @@
 [Packages]
   MdePkg/MdePkg.dec
   MdeModulePkg/MdeModulePkg.dec
+  AdlinkPkg.dec
+  PostCodeDebugFeaturePkg/PostCodeDebugFeaturePkg.dec
 
 [LibraryClasses]
   SerialPortLib
@@ -46,6 +48,9 @@
   ReportStatusCodeLib
   DebugLib
   BaseMemoryLib
+  ReportStatusCodeLib
+  PostCodeLib
+  PostCodeMapLib
 
 [Guids]
   ## SOMETIMES_CONSUMES   ## HOB
