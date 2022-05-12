@@ -49,6 +49,7 @@
   #  DEBUG_ERROR     0x80000000  // Error
   DEFINE DEBUG_PRINT_ERROR_LEVEL = 0x8000004F
   DEFINE FIRMWARE_VER            = 2.04.100
+  DEFINE EDK2_SKIP_PEICORE       = TRUE // for modified PcieCore
   DEFINE SECURE_BOOT_ENABLE      = FALSE
   DEFINE TPM2_ENABLE             = TRUE
   DEFINE INCLUDE_TFTP_COMMAND    = TRUE
@@ -105,6 +106,11 @@
   # Pcie Board
   #
   BoardPcieLib|Platform/Ampere/ComHpcAltPkg/Library/BoardPcieLib/BoardPcieLib.inf
+
+  #
+  # Boot Maintenance Manager Ui Library
+  #
+  BootMaintenanceManagerUiLib|Platform/Ampere/ComHpcAltPkg/Library/BootMaintenanceManagerUiLib/BootMaintenanceManagerUiLib.inf
 
   #
   # Library for POST Code converting
