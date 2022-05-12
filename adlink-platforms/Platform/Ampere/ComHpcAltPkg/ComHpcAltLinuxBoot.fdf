@@ -143,7 +143,7 @@ APRIORI DXE {
   #
   # Bds
   #
-  INF Platform/Ampere/ComHpcAltPkg/Universal/BdsDxe/BdsDxe.inf
+  INF MdeModulePkg/Universal/BdsDxe/BdsDxe.inf
 
   #
   # Driver to handle HW Watchdog

@@ -1,7 +1,6 @@
 #!/bin/bash
 OPATH=$PATH
 . edk2.sh
-export PACKAGES_PATH=$WORKSPACE/adlink-platforms:$WORKSPACE/edk2-platforms/Features/Intel/Debugging:$PACKAGES_PATH
 OEM_SRC_DIR=$WORKSPACE/adlink-platforms
 BOARD_NAME=ComHpcAlt
 EDK2_PLATFORMS_PKG_DIR=$OEM_SRC_DIR/Platform/Ampere/"$BOARD_NAME"Pkg
@@ -34,7 +33,7 @@ make -f $WORKSPACE/edk2-ampere-tools/Makefile \
     BOARD_NAME=$BOARD_NAME \
     VM_SHARED_DIR=$HOME/AmpereR \
     CHECKSUM_TOOL=$OEM_SRC_DIR/toolchain/checksum \
-    PACKAGES_PATH=$OEM_SRC_DIR:$WORKSPACE/OpenPlatformPkg:"${PACKAGES_PATH}" \
+    PACKAGES_PATH=$OEM_SRC_DIR:$WORKSPACE/edk2-platforms/Features/Intel/Debugging:$WORKSPACE/OpenPlatformPkg:"${PACKAGES_PATH}" \
     ATF_SLIM=$WORKSPACE/AmpereAltra-ATF-SCP/atf/altra_atf_signed_2.06.20220308.slim \
     SCP_SLIM=$WORKSPACE/AmpereAltra-ATF-SCP/scp/altra_scp_signed_2.06.20220308.slim \
     FAILSAFE_WORKAROUND=$FAILSAFE_WORKAROUND \

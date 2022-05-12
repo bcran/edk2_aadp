@@ -254,11 +254,6 @@
   Platform/Ampere/AmperePlatformPkg/Drivers/ASpeedGopBinPkg/GopDxe.inf
 
   #
-  # BDS
-  #
-  Platform/Ampere/ComHpcAltPkg/Universal/BdsDxe/BdsDxe.inf
-
-  #
   # SMBIOS
   #
   MdeModulePkg/Universal/SmbiosDxe/SmbiosDxe.inf

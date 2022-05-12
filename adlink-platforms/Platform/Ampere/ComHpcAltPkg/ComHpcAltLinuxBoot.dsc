@@ -90,11 +90,6 @@
   Platform/Ampere/JadePkg/Ac02AcpiTables/Ac02AcpiTables.inf
 
   #
-  # BDS
-  #
-  Platform/Ampere/ComHpcAltPkg/Universal/BdsDxe/BdsDxe.inf
-
-  #
   # SMBIOS
   #
   MdeModulePkg/Universal/SmbiosDxe/SmbiosDxe.inf
