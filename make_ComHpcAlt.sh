@@ -8,7 +8,7 @@ EDK2_PLATFORMS_PKG_DIR=$OEM_SRC_DIR/Platform/Ampere/"$BOARD_NAME"Pkg
 #
 # specify the BOARD stepping here
 #
-BOARD_STEPPING=A1
+BOARD_STEPPING=A2
 #
 # specify the ROM programing tool here
 #
@@ -25,7 +25,7 @@ else
 fi    
 
 VER=2.04
-BUILD=100.00$BUILD_NUMBER_EXT
+BUILD=100.03$BUILD_NUMBER_EXT
 
 make -f $WORKSPACE/edk2-ampere-tools/Makefile \
     PROGRAMMER_TOOL=$PROGRAMMER_TOOL \
