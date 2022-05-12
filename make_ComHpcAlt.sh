@@ -1,6 +1,7 @@
 #!/bin/bash
 OPATH=$PATH
 . edk2.sh
+export PACKAGES_PATH=$WORKSPACE/adlink-platforms:$WORKSPACE/edk2-platforms/Features/Intel/Debugging:$PACKAGES_PATH
 OEM_SRC_DIR=$WORKSPACE/adlink-platforms
 BOARD_NAME=ComHpcAlt
 EDK2_PLATFORMS_PKG_DIR=$OEM_SRC_DIR/Platform/Ampere/"$BOARD_NAME"Pkg

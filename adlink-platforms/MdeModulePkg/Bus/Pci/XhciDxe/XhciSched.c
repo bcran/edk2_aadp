@@ -1354,7 +1354,7 @@ XhcExecTransfer (
   // the Host will return Timeout right after receiving a series of 50
   // sequential NAK responses.
   //
-#define MAX_NUMBER_OF_NAK_FOR_A_BULK_IN_REQUEST  50
+#define MAX_NUMBER_OF_NAK_FOR_A_BULK_IN_REQUEST  65535
   UINTN Count;
   Count = 0;
 
