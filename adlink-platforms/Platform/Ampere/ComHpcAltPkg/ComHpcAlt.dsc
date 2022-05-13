@@ -12,8 +12,8 @@
 #
 ################################################################################
 [Defines]
-  PLATFORM_NAME                  = ComHpcAlt
-  PLATFORM_GUID                  = A4365AA5-0696-4E90-BB5A-ABC1BF6BFAB0
+  PLATFORM_NAME                  = AvaAp1
+  PLATFORM_GUID                  = 7787CE84-03ED-444E-9E0F-F8A99C865951
   PLATFORM_VERSION               = 0.1
   DSC_SPECIFICATION              = 0x0001001B
   OUTPUT_DIRECTORY               = Build/ComHpcAlt
@@ -104,7 +104,7 @@
   #
   # Pcie Board
   #
-  BoardPcieLib|Platform/Ampere/ComHpcAltPkg/Library/BoardPcieLib/BoardPcieLib.inf
+  BoardPcieLib|adlink-platforms/Library/BoardPcieLib/BoardPcieLib.inf
 
   #
   # Library for POST Code converting
@@ -125,7 +125,7 @@
   #
   # RTC Library: Common RTC
   #
-  RealTimeClockLib|Platform/Ampere/ComHpcAltPkg/Library/PCF8563RealTimeClockLib/PCF8563RealTimeClockLib.inf
+  RealTimeClockLib|Library/PCF8563RealTimeClockLib/PCF8563RealTimeClockLib.inf
 
 [LibraryClasses.common.UEFI_DRIVER, LibraryClasses.common.UEFI_APPLICATION, LibraryClasses.common.DXE_RUNTIME_DRIVER, LibraryClasses.common.DXE_DRIVER]
   SmbusLib|Platform/Ampere/JadePkg/Library/DxePlatformSmbusLib/DxePlatformSmbusLib.inf
