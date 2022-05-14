@@ -18,14 +18,13 @@ Ampere Mountain Jade code base & tools installation.
 * OpenPlatformPkg: a submodule from Linaro.
   
 # Files
-* boardStepping.py: tool to switch A1/A2 board stepping setting in make script.
 * buildshell.sh: build uefi shell for AA64.
 * clean.sh: clean temporary files and tools.
 * edk2.sh: Sample script to set environment variables and run edksetup.sh.
 * flashkernel: tiny linux kernel for embedded.
+* make_AvaAp1.sh: Sample script to make ADLINK AVA-AP1.
 * make_ComHpcAlt.sh: Sample script to make ADLINK COM-HPC-ALT.
 * make_jade.sh: Sample script to make CRB Ampere Mt. Jade.
-* make_A1A2.sh: make A1/A2+ BIOSes all at once.
 * setup.sh: Sample script to install all source code and tools. Mind your own SSH connection setting if there is any.
     * *setup.sh [TARGET_FOLDER, default=Ampere_Altra]*
 
@@ -36,19 +35,19 @@ Ampere Mountain Jade code base & tools installation.
 2. Execute the below command to build EDK-II image for COM-HPC-ALT
 
    ```
-   . make_ComHpcAlt.sh
+   . make_[Board].sh
    ```
 
-3. After successful compilation, the final EDK-II image **ComHpcAlt_tianocore_atf_*.cap** will be found in below path
+3. After successful compilation, the final EDK-II image **[Board]_tianocore_atf_*.cap** will be found in below path
 
    ```
-   $PWD/BUILDS/ComHpcAlt_tianocore_atf_*/
+   $PWD/BUILDS/[Board]_tianocore_atf_*/
    ```
 
 # Flashing SCP/EDK-II
 * Following Capsule update steps works for v2.04.100.00 or later version, follow the instruction in release package to update BIOS otherwise.
 
-1. Copy **CapsuleApp.efi** , **ComHpcAlt_scp_*.cap** , **ComHpcAlt_tianocore_atf_*.cap** files from path *$PWD/BUILDS/ComHpcAlt_tianocore_atf_*/* into FAT32 USB and connect to target board.
+1. Copy **CapsuleApp.efi** , **[Board]_scp_*.cap** , **[Board]_tianocore_atf_*.cap** files from path *$PWD/BUILDS/[Board]_tianocore_atf_*/* into FAT32 USB and connect to target board.
 
 2. Power up the target and boot into UEFI shell. 
 
@@ -64,13 +63,13 @@ Ampere Mountain Jade code base & tools installation.
 4. Run below command to flash SCP FW.
 
    ```
-   CapsuleApp.efi ComHpcAlt_scp_*.cap
+   CapsuleApp.efi [Board]_scp_*.cap
    ```
 
 5. Run below command to flash EDK-II FW v* (this includes ATF + UEFI + BoardSettings).
 
    ```
-   CapsuleApp.efi ComHpcAlt_tianocore_atf_*.cap
+   CapsuleApp.efi [Board]_tianocore_atf_*.cap
    ```
 
 6. Power cycle the target board.
