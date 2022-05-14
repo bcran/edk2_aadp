@@ -13,7 +13,7 @@
 ################################################################################
 [Defines]
   PLATFORM_NAME                  = ComHpcAlt
-  PLATFORM_GUID                  = BDFD62FB-6372-4475-92D0-7DA694395449
+  PLATFORM_GUID                  = A4365AA5-0696-4E90-BB5A-ABC1BF6BFAB0
   PLATFORM_VERSION               = 0.1
   DSC_SPECIFICATION              = 0x0001001B
   OUTPUT_DIRECTORY               = Build/ComHpcAlt
@@ -28,6 +28,7 @@
   #
   DEFINE DEBUG_PRINT_ERROR_LEVEL = 0x8000000F
   DEFINE FIRMWARE_VER            = 2.04.100
+  DEFINE PLATFORM_CONFIG_UUID    = 21A80447-B2DD-4D8C-BCA2-04305F025EA4
   DEFINE EDK2_SKIP_PEICORE       = TRUE
 
 !include MdePkg/MdeLibs.dsc.inc
@@ -64,6 +65,11 @@
   gAmpereTokenSpaceGuid.PcdSmbiosTables0BiosReleaseDate|"MM/DD/YYYY"
 
 [PcdsFixedAtBuild.common]
+  #
+  # Platform config UUID
+  #
+  gAmpereTokenSpaceGuid.PcdPlatformConfigUuid|"$(PLATFORM_CONFIG_UUID)"
+
   gAmpereTokenSpaceGuid.PcdSmbiosTables1MajorVersion|$(MAJOR_VER)
   gAmpereTokenSpaceGuid.PcdSmbiosTables1MinorVersion|$(MINOR_VER)
 
@@ -74,6 +80,9 @@
   # below 4 GB needlessly fragment the memory map. So expose the 64-bit entry
   # point only, for entry point versions >= 3.0.
   gEfiMdeModulePkgTokenSpaceGuid.PcdSmbiosEntryPointProvideMethod|0x2
+
+  # set baudrate to match with MMC
+  gArmPlatformTokenSpaceGuid.PcdSerialDbgUartBaudRate|57600
 
 #
 # Specific Platform Component

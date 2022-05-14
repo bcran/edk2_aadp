@@ -12,8 +12,8 @@
 #
 ################################################################################
 [Defines]
-  PLATFORM_NAME                  = AvaAp1
-  PLATFORM_GUID                  = 7787CE84-03ED-444E-9E0F-F8A99C865951
+  PLATFORM_NAME                  = ComHpcAlt
+  PLATFORM_GUID                  = A4365AA5-0696-4E90-BB5A-ABC1BF6BFAB0
   PLATFORM_VERSION               = 0.1
   DSC_SPECIFICATION              = 0x0001001B
   OUTPUT_DIRECTORY               = Build/ComHpcAlt
@@ -104,12 +104,13 @@
   #
   # Pcie Board
   #
-  BoardPcieLib|adlink-platforms/Library/BoardPcieLib/BoardPcieLib.inf
+  BoardPcieLib|Library/BoardPcieLib/BoardPcieLib.inf
 
   #
   # Library for POST Code converting
   #
   ReportStatusCodeLib|MdeModulePkg/Library/DxeReportStatusCodeLib/DxeReportStatusCodeLib.inf
+  
   #
   # EFI Redfish drivers
   #
@@ -199,12 +200,12 @@
   gAmpereTokenSpaceGuid.PcdSmbiosTables0BiosReleaseDate|"MM/DD/YYYY"
 
   # SMBIOS Type 1 - UUID
-  gAmpereTokenSpaceGuid.PcdFruSystemUniqueID|{ 0x50, 0xFC, 0x29, 0x26, 0xCB, 0xB7, 0x11, 0xEB, 0xB8, 0xBC, 0x02, 0x42, 0xAC, 0x13, 0x00, 0x03 }
+  gAmpereTokenSpaceGuid.PcdFruSystemUniqueID|{ 0xca, 0x8c, 0x8c, 0xb1, 0x00, 0x7c, 0xcb, 0x4c, 0x82, 0x02, 0x03, 0xcc, 0xf6, 0xda, 0x40, 0x57 }
 
 [PcdsDynamicExDefault.common.DEFAULT]
   gEfiSignedCapsulePkgTokenSpaceGuid.PcdEdkiiSystemFirmwareImageDescriptor|{0x0}|VOID*|0x100
-  gEfiMdeModulePkgTokenSpaceGuid.PcdSystemFmpCapsuleImageTypeIdGuid|{0x31, 0xca, 0x8b, 0xf0, 0x2e, 0x54, 0xea, 0x4c, 0x8b, 0x48, 0x8e, 0x54, 0xf9, 0x42, 0x25, 0x94}
-  gEfiSignedCapsulePkgTokenSpaceGuid.PcdEdkiiSystemFirmwareFileGuid|{0xed, 0x06, 0x1c, 0x43, 0xe2, 0x4f, 0x8f, 0x43, 0x98, 0xa3, 0xa9, 0xb1, 0xfd, 0x92, 0x30, 0x19}
+  gEfiMdeModulePkgTokenSpaceGuid.PcdSystemFmpCapsuleImageTypeIdGuid|{0xea, 0x60, 0x13, 0xaa, 0xb3, 0xaf, 0x25, 0x4f, 0xa5, 0xd0, 0x6c, 0x43, 0x4e, 0x0d, 0xbd, 0x9c}
+  gEfiSignedCapsulePkgTokenSpaceGuid.PcdEdkiiSystemFirmwareFileGuid|{0xb4, 0x9c, 0x59, 0xa9, 0x9d, 0x4d, 0xf3, 0x4f, 0xa2, 0x0f, 0x3c, 0x14, 0x9b, 0x54, 0x46, 0xaf}
 
 [PcdsPatchableInModule]
   #

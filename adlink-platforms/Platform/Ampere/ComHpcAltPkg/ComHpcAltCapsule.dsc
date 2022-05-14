@@ -13,7 +13,7 @@
 ################################################################################
 [Defines]
   PLATFORM_NAME                  = ComHpcAlt
-  PLATFORM_GUID                  = 34C87B13-434A-4767-88FB-2D0CD2AED46F
+  PLATFORM_GUID                  = A4365AA5-0696-4E90-BB5A-ABC1BF6BFAB0
   PLATFORM_VERSION               = 0.1
   DSC_SPECIFICATION              = 0x0001001B
   OUTPUT_DIRECTORY               = Build/ComHpcAlt
