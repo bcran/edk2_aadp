@@ -53,7 +53,7 @@ if [[ -z "$version" || "$parsedVersion" != "3.6" ]] ; then
   if [[ $INSTALLER == "apt" || $INSTALLER == "apt-get" ]]; then
       sudo add-apt-repository -y ppa:deadsnakes/ppa
       sudo apt update -y
-      sudo apt install -y python3.6 python3-distutils python3-pip # 3.6 works for tag 1.07
+      sudo apt install -y python3.6 # 3.6 works for tag 1.07
   else
     sudo dnf install -y python3
   fi
@@ -63,6 +63,7 @@ if [[ -z "$version" || "$parsedVersion" != "3.6" ]] ; then
   fi 
   sudo ln -s /usr/bin/python3.6 ${plink}
 fi
+sudo apt install -y python3-distutils python3-pip
 echo "==========================================================================="
 echo "test connection to SSH host"
 echo "==========================================================================="
