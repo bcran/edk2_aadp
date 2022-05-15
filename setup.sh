@@ -63,7 +63,7 @@ if [[ -z "$version" || "$parsedVersion" != "3.6" ]] ; then
   fi 
   sudo ln -s /usr/bin/python3.6 ${plink}
 fi
-sudo apt install -y python3-distutils python3-pip
+sudo apt install -y python3.6-distutils python3-pip
 echo "==========================================================================="
 echo "test connection to SSH host"
 echo "==========================================================================="
