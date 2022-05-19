@@ -6,14 +6,14 @@
         {
             "label": "makeJade",
             "type": "shell",
-            "command": "bash make_jade.sh",
+            "command": ". make_jade.sh",
             "problemMatcher": [],
             "group": "build"
         },
         {
             "label": "makeComHpcAlt",
             "type": "shell",
-            "command": "bash make_ComHpcAlt.sh",
+            "command": ". make_ComHpcAlt.sh",
             "problemMatcher": [],
             "group": {
                 "kind": "build",
@@ -23,7 +23,7 @@
         {
             "label": "clean",
             "type": "shell",
-            "command": "bash clean.sh",
+            "command": ". clean.sh",
             "problemMatcher": [],
             "group": "build"
         }

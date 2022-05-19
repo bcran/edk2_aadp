@@ -7,8 +7,6 @@
 #
 OPATH=$PATH
 . edk2.sh
-OEM_SRC_DIR=$WORKSPACE/adlink-platforms
-EDK2_PLATFORMS_PKG_DIR=$OEM_SRC_DIR/Platform/Ampere/"$BOARD_NAME"Pkg
 #
 # BOARD info from arguments
 #
@@ -19,6 +17,9 @@ BOARD_STEPPING=$2
 #
 VER=2.04
 BUILD=100.03
+
+OEM_SRC_DIR=$WORKSPACE/adlink-platforms
+EDK2_PLATFORMS_PKG_DIR=$OEM_SRC_DIR/Platform/Ampere/"$BOARD_NAME"Pkg
 
 if  [ "${BOARD_STEPPING}" == "A1" ]; then
     BUILD=$BUILD.A1
