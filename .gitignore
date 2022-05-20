@@ -1,7 +1,8 @@
 # folders
-.vscode/
 Build/
 BUILDS/
-edk2-ampere-tools/toolchain/
 # files
 initramfs.cpio
+*.log
+.vscode/configurationCache.log
+.vscode/targets.log

@@ -6,14 +6,14 @@
         {
             "label": "makeJade",
             "type": "shell",
-            "command": ". make_jade.sh",
+            "command": "bash edk2_ampere-altra/tools/make_jade.sh",
             "problemMatcher": [],
             "group": "build"
         },
         {
             "label": "makeComHpcAlt",
             "type": "shell",
-            "command": ". make_ComHpcAlt.sh",
+            "command": "bash make_ComHpcAlt.sh",
             "problemMatcher": [],
             "group": {
                 "kind": "build",
@@ -23,7 +23,7 @@
         {
             "label": "clean",
             "type": "shell",
-            "command": ". clean.sh",
+            "command": "bash ./edk2_adlink-ampere-altra/tools/clean.sh",
             "problemMatcher": [],
             "group": "build"
         }

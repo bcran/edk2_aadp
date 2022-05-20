@@ -16,13 +16,9 @@ Ampere Mountain Jade code base & tools installation.
 * edk2-ampere-tools: a submodule from edk2 fork of Ampere's edk2-ampere-tools.
 * edk2-platforms: a submodule from Ampere.
 * OpenPlatformPkg: a submodule from Linaro.
+* edk2_adlink-ampere-altra: common files of adlink ampere altra projects.
   
 # Files
-* buildshell.sh: build uefi shell for AA64.
-* clean.sh: clean temporary files and tools.
-* edk2.sh: Sample script to set environment variables and run edksetup.sh.
-* flashkernel: tiny linux kernel for embedded.
-* make_AvaAp1.sh: Sample script to make ADLINK AVA-AP1.
 * make_ComHpcAlt.sh: Sample script to make ADLINK COM-HPC-ALT.
 * make_jade.sh: Sample script to make CRB Ampere Mt. Jade.
 * setup.sh: Sample script to install all source code and tools. Mind your own SSH connection setting if there is any.
@@ -89,6 +85,7 @@ NOTE:
 NOTE: 
 
 - The above steps required only when the target is having EDK-II firmware version lesser than v2.04.100.00.
+
 # POST code:
 * Progress Map 
   * DXE_CORE_STARTED, 0x60 },

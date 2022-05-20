@@ -98,7 +98,7 @@ echo "==========================================================================
 cd $HOME
 SILLICON_FAMILY=$1
 if [ -z "$SILLICON_FAMILY" ]; then
-  SILLICON_FAMILY="edk2_adlink"
+  SILLICON_FAMILY="edk2_aadp"
 fi
 if [ -d "$SILLICON_FAMILY" ]; then
   read -p "Do you wish to override current $SILLICON_FAMILY folder?" yn
@@ -107,7 +107,7 @@ if [ -d "$SILLICON_FAMILY" ]; then
     * ) return 1;;
   esac
 fi
-git clone --recurse-submodules -j8 https://github.com/ADLINK/edk2_adlink.git $SILLICON_FAMILY
+git clone --recurse-submodules -j8 https://github.com/ADLINK/edk2_aadp.git $SILLICON_FAMILY
 echo "==========================================================================="
 echo "fetch submodules recursively"
 echo "==========================================================================="
@@ -149,13 +149,18 @@ if [ "eval $(ssh -T git@github.com-adlink | grep -q "authenticated")" != "" ] ; 
     git remote set-url origin git@github.com-adlink:ADLINK/edk2-ampere-tools.git
     cd .. 
   fi  
-  git remote set-url origin git@github.com-adlink:ADLINK/edk2_adlink.git
+  if [ -d "edk2_adlink-ampere-altra" ] ; then
+    cd edk2_adlink-ampere-altra
+    git remote set-url origin git@github.com-adlink:ADLINK/edk2_adlink-ampere-altra.git
+    cd .. 
+  fi  
+  git remote set-url origin git@github.com-adlink:ADLINK//edk2_aadp.git
 fi
 echo "==========================================================================="
 echo "set building environment"
 echo "==========================================================================="
-source edk2/edksetup.sh --reconfig
-source edk2.sh
+source edk2_adlink-ampere-altra/tools/edk2/edksetup.sh --reconfig
+source edk2_adlink-ampere-altra/tools/edk2.sh
 echo "==========================================================================="
 echo "Ready to build !!!"
 echo "==========================================================================="

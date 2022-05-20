@@ -1,6 +1,7 @@
 #!/bin/bash
+export WORKSPACE=$PWD
 OPATH=$PATH
-. edk2.sh
+. $WORKSPACE/edk2_adlink-ampere-altra/tools/edk2.sh
 make -f $WORKSPACE/edk2-ampere-tools/Makefile \
     BOARD_SETTING=$WORKSPACE/AmpereAltra-ATF-SCP/board_settings/jade_board_setting_2.06.20220308.bin \
     VM_SHARED_DIR=$HOME/AmpereR \
