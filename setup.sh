@@ -154,7 +154,7 @@ if [ "eval $(ssh -T git@github.com-adlink | grep -q "authenticated")" != "" ] ; 
     git remote set-url origin git@github.com-adlink:ADLINK/edk2_adlink-ampere-altra.git
     cd .. 
   fi  
-  git remote set-url origin git@github.com-adlink:ADLINK//edk2_aadp.git
+  git remote set-url origin git@github.com-adlink:ADLINK/edk2_aadp.git
 fi
 echo "==========================================================================="
 echo "set building environment"
