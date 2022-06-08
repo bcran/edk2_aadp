@@ -159,6 +159,7 @@ fi
 echo "==========================================================================="
 echo "set building environment"
 echo "==========================================================================="
+export WORKSPACE=$PWD
 source edk2_adlink-ampere-altra/tools/edk2/edksetup.sh --reconfig
 source edk2_adlink-ampere-altra/tools/edk2.sh
 echo "==========================================================================="
