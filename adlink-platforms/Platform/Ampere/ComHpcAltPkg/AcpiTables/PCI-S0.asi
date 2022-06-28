@@ -1,89 +1,12 @@
 /** @file
 
-  Copyright (c) 2020 - 2021, Ampere Computing LLC. All rights reserved.<BR>
+  Copyright (c) 2020, Ampere Computing LLC. All rights reserved.<BR>
 
   SPDX-License-Identifier: BSD-2-Clause-Patent
 
 **/
 
-  // @DRAM base address 0x88970000
-  // Regard updating status of multiple HP PCIe ports,
-  // according to "PCIe Bifurcation Mapping" spec just reserve 24x48 bytes (48 ports),
-  // but based on portmap_table in atf-test/spm/ampere_hp/portmap_tbl.c just declare 40 ports
-  OperationRegion(MHPP, SystemMemory, 0x88970000, 960)
-  Field (MHPP, DWordAcc, NoLock, Preserve) {
-      A020, 32, // 0. S0 RCA2.0
-      offset (24),
-      A030, 32, // 1. S0 RCA3.0
-      offset (48),
-      B000, 32, // 2. S0 RCB0.0
-      offset (72),
-      B002, 32, // 3. S0 RCB0.2
-      offset (96),
-      B004, 32, // 4. S0 RCB0.4
-      offset (120),
-      B006, 32, // 5. S0 RCB0.6
-      offset (144),
-      B010, 32, // 6. S0 RCB1.0
-      offset (168),
-      B012, 32, // 7. S0 RCB1.2
-      offset (192),
-      B014, 32, // 8. S0 RCB1.4
-      offset (216),
-      B016, 32, // 9. S0 RCB1.6
-      offset (240),
-      B020, 32, // 10. S0 RCB2.0
-      offset (264),
-      B022, 32, // 11. S0 RCB2.2
-      offset (288),
-      B024, 32, // 12. S0 RCB2.4
-      offset (312),
-      B030, 32, // 13. S0 RCB3.0
-      offset (336),
-      B034, 32, // 14. S0 RCB3.4
-      offset (360),
-      B036, 32, // 15. S0 RCB3.6
-      offset (384),
-      A120, 32, // 16. S1 RCA2.0
-      offset (408),
-      A121, 32, // 17. S1 RCA2.1
-      offset (432),
-      A122, 32, // 18. S1 RCA2.2
-      offset (456),
-      A123, 32, // 19. S1 RCA2.3
-      offset (480),
-      A130, 32, // 20. S1 RCA3.0
-      offset (504),
-      A132, 32, // 21. S1 RCA3.2
-      offset (528),
-      B100, 32, // 22. S1 RCB0.0
-      offset (552),
-      B104, 32, // 23. S1 RCB0.4
-      offset (576),
-      B106, 32, // 24. S1 RCB0.6
-      offset (600),
-      B110, 32, // 25. S1 RCB1.0
-      offset (624),
-      B112, 32, // 26. S1 RCB1.2
-      offset (648),
-      B114, 32, // 27. S1 RCB1.4
-      offset (672),
-      B120, 32, // 28. S1 RCB2.0
-      offset (696),
-      B122, 32, // 29. S1 RCB2.2
-      offset (720),
-      B124, 32, // 30. S1 RCB2.4
-      offset (744),
-      B126, 32, // 31. S1 RCB2.6
-      offset (768),
-      B130, 32, // 32. S1 RCB3.0
-      offset (792),
-      B132, 32, // 33. S1 RCB3.2
-      offset (816),
-      B134, 32, // 34. S1 RCB3.4
-      offset (840),
-      B136, 32, // 35. S1 RCB3.6
-  }
+  Include("MHPP.asi")
 
   // @DoorBellNS1 0x1000.0054.1000. Out-Offset: 0x10
   OperationRegion(DNS1, SystemMemory, 0x100000541010 , 8)
@@ -914,10 +837,10 @@
         NonCacheable,         // NonCacheable
         ReadWrite,            // ReadAndWrite
         0x0000000000000000,   // AddressGranularity - GRA
-        0x0000000001000000,   // AddressMinimum - MIN
+        0x0000000004000000,   // AddressMinimum - MIN
         0x0000000007FFFFFF,   // AddressMinimum - MAX
         0x0000000000000000,   // AddressTranslation - TRA
-        0x0000000007000000    // RangeLength - LEN
+        0x0000000004000000    // RangeLength - LEN
       )
 
       QWordMemory (
@@ -1133,10 +1056,20 @@
                                     // 0x68000212 to DBNS1_10
             Return(0xF)
           }
-          elseif (B000 == 0x00000400) { // ejected ?
+          elseif (B000 == 0x10000400) { // ejected complete ?
+            Store(0x02000400, B000) // clear action value
             Return(0x0)
           }
-          elseif (B000 == 0x01000400) { // inserted ?
+          elseif ((B000 == 0x01000400) || (B000 == 0x0F000400)) { // inserted ?
+            if (B02I == 0x00) {
+              Store(0x02000400, B000) // clear action value
+            }
+            Return(0xF)
+          }
+          elseif ((B000 == 0x0E000400) || (B000 == 0x0F000400)) { // inprogress inserted ?
+            if (B02I == 0x00) {
+              Store(0x02000400, B000) // clear action value
+            }
             Return(0xF)
           }
           else {
@@ -1145,13 +1078,15 @@
         }
 
         Method (_EJ0, 1) {
-          Store(0xF0000400, B000) // set SW ejection action
-          Store(0x680000B4, DIN0) // Blink RED LED
-                                  // <Led:6-7.Led_action:4-5.Ampere_HP_CMD:0-3>
-                                  // Ampere_HP_CMD: LED_CMD = 4, HP_CHG_CMD = 3
-          Store(0x68000212, OUTV) // <MsgType(0x6)-Hdlr(0x8).Resv.action.dev.segment>
-                                  // action: Insert = 1 & Remove = 2
-                                  // 0x68000212 to DBNS1_10
+          if (B000 == 0x02000400) { // really sw ejection call?
+            Store(0xF0000400, B000) // set SW ejection action
+            Store(0x680000B4, DIN0) // Blink RED LED
+                                    // <Led:6-7.Led_action:4-5.Ampere_HP_CMD:0-3>
+                                    // Ampere_HP_CMD: LED_CMD = 4, HP_CHG_CMD = 3
+            Store(0x68000212, OUTV) // <MsgType(0x6)-Hdlr(0x8).Resv.action.dev.segment>
+                                    // action: Insert = 1 & Remove = 2
+                                    // 0x68000212 to DBNS1_10
+          }
         }
 
         Name(_SUN, 0x00000001)
@@ -1188,10 +1123,20 @@
                                     // 0x68000232 to DBNS1_10
             Return(0xF)
           }
-          elseif (B002 == 0x00020400) { // ejected ?
+          elseif (B002 == 0x10020400) { // ejected complete ?
+            Store(0x02020400, B002) // clear action value
             Return(0x0)
           }
-          elseif (B002 == 0x01020400) { // inserted ?
+          elseif ((B002 == 0x01020400) || (B002 == 0x0F020400)) { // inserted ?
+            if (B03I == 0x00) {
+              Store(0x02020400, B002) // clear action value
+            }
+            Return(0xF)
+          }
+          elseif ((B002 == 0x0E020400) || (B002 == 0x0F020400)) { // inprogress inserted ?
+            if (B03I == 0x00) {
+              Store(0x02020400, B002) // clear action value
+            }
             Return(0xF)
           }
           else {
@@ -1200,13 +1145,15 @@
         }
 
         Method (_EJ0, 1) {
-          Store(0xF0020400, B002) // set SW ejection action
-          Store(0x680000B4, DIN0) // Blink RED LED
-                                  // <Led:6-7.Led_action:4-5.Ampere_HP_CMD:0-3>
-                                  // Ampere_HP_CMD: LED_CMD = 4, HP_CHG_CMD = 3
-          Store(0x68000232, OUTV) // <MsgType(0x6)-Hdlr(0x8).Resv.action.dev.segment>
-                                  // action: Insert = 1 & Remove = 2
-                                  // 0x68000232 to DBNS1_10
+          if (B002 == 0x02020400) { // really sw ejection call?
+            Store(0xF0020400, B002) // set SW ejection action
+            Store(0x680000B4, DIN0) // Blink RED LED
+                                    // <Led:6-7.Led_action:4-5.Ampere_HP_CMD:0-3>
+                                    // Ampere_HP_CMD: LED_CMD = 4, HP_CHG_CMD = 3
+            Store(0x68000232, OUTV) // <MsgType(0x6)-Hdlr(0x8).Resv.action.dev.segment>
+                                    // action: Insert = 1 & Remove = 2
+                                    // 0x68000232 to DBNS1_10
+          }
         }
 
         Name(_SUN, 0x00000002)
@@ -1243,10 +1190,20 @@
                                     // 0x68000252 to DBNS1_10
             Return(0xF)
           }
-          elseif(B004 == 0x00040400) { // ejected?
+          elseif (B004 == 0x10040400) { // ejected complete ?
+            Store(0x02040400, B004) // clear action value
             Return(0x0)
           }
-          elseif(B004 == 0x01040400) { // inserted?
+          elseif ((B004 == 0x01040400) || (B004 == 0x0F040400)) { // inserted?
+            if (B04I == 0x00) {
+              Store(0x02040400, B004) // clear action value
+            }
+            Return(0xF)
+          }
+          elseif ((B004 == 0x0E040400) || (B004 == 0x0F040400)) { // inprogress inserted?
+            if (B04I == 0x00) {
+              Store(0x02040400, B004) // clear action value
+            }
             Return(0xF)
           }
           else {
@@ -1255,13 +1212,15 @@
         }
 
         Method (_EJ0, 1) {
-          Store(0xF0040400, B004) // set SW ejection action
-          Store(0x680000B4, DIN0) // Blink RED LED
-                                  // <Led:6-7.Led_action:4-5.Ampere_HP_CMD:0-3>
-                                  // Ampere_HP_CMD: LED_CMD = 4, HP_CHG_CMD = 3
-          Store(0x68000252, OUTV) // <MsgType(0x6)-Hdlr(0x8).Resv.action.dev.segment>
-                                  // action: Insert = 1 & Remove = 2
-                                  // 0x68000252 to DBNS1_10
+          if (B004 == 0x02040400) { // really sw ejection call?
+            Store(0xF0040400, B004) // set SW ejection action
+            Store(0x680000B4, DIN0) // Blink RED LED
+                                    // <Led:6-7.Led_action:4-5.Ampere_HP_CMD:0-3>
+                                    // Ampere_HP_CMD: LED_CMD = 4, HP_CHG_CMD = 3
+            Store(0x68000252, OUTV) // <MsgType(0x6)-Hdlr(0x8).Resv.action.dev.segment>
+                                    // action: Insert = 1 & Remove = 2
+                                    // 0x68000252 to DBNS1_10
+          }
         }
 
         Name(_SUN, 0x00000003)
@@ -1298,10 +1257,20 @@
                                     // 0x68000272 to DBNS1_10
             Return(0xF)
           }
-          elseif(B006 == 0x00060400) { // ejected ?
+          elseif(B006 == 0x10060400) { // ejected complete ?
+            Store(0x02060400, B006) // clear action value
             Return(0x0)
           }
-          elseif(B006 == 0x01060400) { // inserted ?
+          elseif((B006 == 0x01060400) || (B006 == 0x0F060400)) { // inserted ?
+            if (B05I == 0x00) {
+              Store(0x02060400, B006) // clear action value
+            }
+            Return(0xF)
+          }
+          elseif((B006 == 0x0E060400) || (B006 == 0x0F060400)) { // inprogress inserted ?
+            if (B05I == 0x00) {
+              Store(0x02060400, B006) // clear action value
+            }
             Return(0xF)
           }
           else {
@@ -1310,13 +1279,15 @@
         }
 
         Method (_EJ0, 1) {
-          Store(0xF0060400, B006) // set SW ejection value
-          Store(0x680000B4, DIN0) // Blink RED LED
-                                  // <Led:6-7.Led_action:4-5.Ampere_HP_CMD:0-3>
-                                  // Ampere_HP_CMD: LED_CMD = 4, HP_CHG_CMD = 3
-          Store(0x68000272, OUTV) // <MsgType(0x6)-Hdlr(0x8).Resv.action.dev.segment>
-                                  // action: Insert = 1 & Remove = 2
-                                  // 0x68000272 to DBNS1_10
+          if (B006 == 0x02060400) { // really sw ejection call?
+            Store(0xF0060400, B006) // set SW ejection value
+            Store(0x680000B4, DIN0) // Blink RED LED
+                                    // <Led:6-7.Led_action:4-5.Ampere_HP_CMD:0-3>
+                                    // Ampere_HP_CMD: LED_CMD = 4, HP_CHG_CMD = 3
+            Store(0x68000272, OUTV) // <MsgType(0x6)-Hdlr(0x8).Resv.action.dev.segment>
+                                    // action: Insert = 1 & Remove = 2
+                                    // 0x68000272 to DBNS1_10
+          }
         }
 
         Name(_SUN, 0x00000004)
@@ -1703,10 +1674,20 @@
                                     // 0x68000213 to DBNS1_10
             Return(0xF)
           }
-          elseif (B010 == 0x00000500) { // ejected ?
+          elseif (B010 == 0x10000500) { // ejected complete ?
+            Store(0x02000500, B010) // Set back action event
             Return (0x0)
           }
-          elseif (B010 == 0x01000500) { // inserted ?
+          elseif ((B010 == 0x01000500) || (B010 == 0x0F000500)) { // inserted ?
+            if (B06I == 0x00) {
+              Store(0x02000500, B010) // Set back action event
+            }
+            Return (0xF)
+          }
+          elseif ((B010 == 0x0E000500) || (B010 == 0x0F000500)) { // inprogress inserted ?
+            if (B06I == 0x00) {
+              Store(0x02000500, B010) // Set back action event
+            }
             Return (0xF)
           }
           else {
@@ -1715,13 +1696,15 @@
         }
 
         Method (_EJ0, 1) {
-          Store(0xF0000500, B010) // Set SW ejection event
-          Store(0x680000B4, DIN0) // Blink RED LED
-                                  // <Led:6-7.Led_action:4-5.Ampere_HP_CMD:0-3>
-                                  // Ampere_HP_CMD: LED_CMD = 4, HP_CHG_CMD = 3
-          Store(0x68000213, OUTV) // <MsgType(0x6)-Hdlr(0x8).Resv.action.dev.segment>
-                                  // action: Insert = 1 & Remove = 2
-                                  // 0x68000213 to DBNS1_10
+          if (B010 == 0x02000500) { // really sw ejection call?
+            Store(0xF0000500, B010) // Set SW ejection event
+            Store(0x680000B4, DIN0) // Blink RED LED
+                                    // <Led:6-7.Led_action:4-5.Ampere_HP_CMD:0-3>
+                                    // Ampere_HP_CMD: LED_CMD = 4, HP_CHG_CMD = 3
+            Store(0x68000213, OUTV) // <MsgType(0x6)-Hdlr(0x8).Resv.action.dev.segment>
+                                    // action: Insert = 1 & Remove = 2
+                                    // 0x68000213 to DBNS1_10
+          }
         }
 
         Name(_SUN, 0x00000001)
@@ -1758,10 +1741,20 @@
                                     // 0x68000233 to DBNS1_10
             Return(0xF)
           }
-          elseif (B012 == 0x00020500) { // ejected ?
+          elseif (B012 == 0x10020500) { // ejected complete ?
+            Store(0x02020500, B012) // clear action value
             Return (0x0)
           }
-          elseif (B012 == 0x01020500) { // inserted ?
+          elseif ((B012 == 0x01020500) || (B012 == 0x0F020500)) { // inserted ?
+            if (B07I == 0x00) {
+              Store(0x02020500, B012) // clear action value
+            }
+            Return (0xF)
+          }
+          elseif ((B012 == 0x0E020500) || (B012 == 0x0F020500)) { // inprogress inserted ?
+            if (B07I == 0x00) {
+              Store(0x02020500, B012) // clear action value
+            }
             Return (0xF)
           }
           else {
@@ -1770,13 +1763,15 @@
         }
 
         Method (_EJ0, 1) {
-          Store(0xF0020500, B012) // set SW ejection event
-          Store(0x680000B4, DIN0) // Blink RED LED
-                                  // <Led:6-7.Led_action:4-5.Ampere_HP_CMD:0-3>
-                                  // Ampere_HP_CMD: LED_CMD = 4, HP_CHG_CMD = 3
-          Store(0x68000233, OUTV) // <MsgType(0x6)-Hdlr(0x8).Resv.action.dev.segment>
-                                  // action: Insert = 1 & Remove = 2
-                                  // 0x68000233 to DBNS1_10
+          if (B012 == 0x02020500) { // really sw ejection call?
+            Store(0xF0020500, B012) // set SW ejection event
+            Store(0x680000B4, DIN0) // Blink RED LED
+                                    // <Led:6-7.Led_action:4-5.Ampere_HP_CMD:0-3>
+                                    // Ampere_HP_CMD: LED_CMD = 4, HP_CHG_CMD = 3
+            Store(0x68000233, OUTV) // <MsgType(0x6)-Hdlr(0x8).Resv.action.dev.segment>
+                                    // action: Insert = 1 & Remove = 2
+                                    // 0x68000233 to DBNS1_10
+          }
         }
 
         Name(_SUN, 0x00000002)
@@ -1813,10 +1808,20 @@
                                     // 0x68000253 to DBNS1_10
             Return (0xF)
           }
-          elseif (B014 == 0x00040500) { // ejected ?
+          elseif (B014 == 0x10040500) { // ejected complete ?
+            Store(0x02040500, B014) // clear action value
             Return (0x0)
           }
-          elseif (B014 == 0x01040500) { // inserted ?
+          elseif ((B014 == 0x01040500) || (B014 == 0x0F040500)){ // inserted ?
+            if (B08I == 0x00) {
+              Store(0x02040500, B014) // clear action value
+            }
+            Return (0xF)
+          }
+          elseif ((B014 == 0x0E040500) || (B014 == 0x0F040500)) { // inprogress inserted ?
+            if (B08I == 0x00) {
+              Store(0x02040500, B014) // clear action value
+            }
             Return (0xF)
           }
           else {
@@ -1825,13 +1830,15 @@
         }
 
         Method (_EJ0, 1) {
-          Store(0xF0040500, B014) // set SW ejection event
-          Store(0x680000B4, DIN0) // Blink RED LED
-                                  // <Led:6-7.Led_action:4-5.Ampere_HP_CMD:0-3>
-                                  // Ampere_HP_CMD: LED_CMD = 4, HP_CHG_CMD = 3
-          Store(0x68000253, OUTV) // <MsgType(0x6)-Hdlr(0x8).Resv.action.dev.segment>
-                                  // action: Insert = 1 & Remove = 2
-                                  // 0x68000253 to DBNS1_10
+          if (B014 == 0x02040500) { // really sw ejection call?
+            Store(0xF0040500, B014) // set SW ejection event
+            Store(0x680000B4, DIN0) // Blink RED LED
+                                    // <Led:6-7.Led_action:4-5.Ampere_HP_CMD:0-3>
+                                    // Ampere_HP_CMD: LED_CMD = 4, HP_CHG_CMD = 3
+            Store(0x68000253, OUTV) // <MsgType(0x6)-Hdlr(0x8).Resv.action.dev.segment>
+                                    // action: Insert = 1 & Remove = 2
+                                    // 0x68000253 to DBNS1_10
+          }
         }
 
         Name(_SUN, 0x00000003)
@@ -1868,10 +1875,20 @@
                                     // 0x68000273 to DBNS1_10
             Return(0xF)
           }
-          elseif (B016 == 0x00060500) { // ejected ?
+          elseif (B016 == 0x10060500) { // ejected complete ?
+            Store(0x02060500, B016) // clear action value
             Return (0x0)
           }
-          elseif (B016 == 0x01060500) { // inserted ?
+          elseif ((B016 == 0x01060500) || (B016 == 0x0F060500)) { // inserted ?
+            if (B09I == 0x00) {
+              Store(0x02060500, B016) // clear action value
+            }
+            Return (0xF)
+          }
+          elseif ((B016 == 0x0E060500) || (B016 == 0x0F060500)) { // inprogress inserted ?
+            if (B09I == 0x00) {
+              Store(0x02060500, B016) // clear action value
+            }
             Return (0xF)
           }
           else {
@@ -1880,13 +1897,15 @@
         }
 
         Method (_EJ0, 1) {
-          Store(0xF0060500, B016) // set SW ejection event
-          Store(0x680000B4, DIN0) // Blink RED LED
-                                  // <Led:6-7.Led_action:4-5.Ampere_HP_CMD:0-3>
-                                  // Ampere_HP_CMD: LED_CMD = 4, HP_CHG_CMD = 3
-          Store(0x68000273, OUTV) // <MsgType(0x6)-Hdlr(0x8).Resv.action.dev.segment>
-                                  // action: Insert = 1 & Remove = 2
-                                  // 0x68000273 to DBNS1_10
+          if (B016 == 0x02060500) { // really sw ejection call?
+            Store(0xF0060500, B016) // set SW ejection event
+            Store(0x680000B4, DIN0) // Blink RED LED
+                                    // <Led:6-7.Led_action:4-5.Ampere_HP_CMD:0-3>
+                                    // Ampere_HP_CMD: LED_CMD = 4, HP_CHG_CMD = 3
+            Store(0x68000273, OUTV) // <MsgType(0x6)-Hdlr(0x8).Resv.action.dev.segment>
+                                    // action: Insert = 1 & Remove = 2
+                                    // 0x68000273 to DBNS1_10
+          }
         }
 
         Name(_SUN, 0x00000004)

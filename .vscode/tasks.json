@@ -6,7 +6,7 @@
         {
             "label": "makeJade",
             "type": "shell",
-            "command": "bash edk2_ampere-altra/tools/make_jade.sh",
+            "command": "bash make_jade.sh",
             "problemMatcher": [],
             "group": "build"
         },

@@ -25,9 +25,9 @@ Device(CMN1) {
     ReadWrite,            // ReadAndWrite
     0x0000000000000000,   // AddressGranularity - GRA
     0x0000500010000000,   // AddressMinimum - MIN
-    0x000050001fffffff,   // AddressMaximum - MAX
+    0x0000500013ffffff,   // AddressMaximum - MAX
     0x0000000000000000,   // AddressTranslation - TRA
-    0x0000000010000000    // RangeLength - LEN
+    0x0000000004000000    // RangeLength - LEN
   )
   QWordMemory (
     ResourceConsumer,     // ResourceUsage
@@ -38,9 +38,9 @@ Device(CMN1) {
     ReadWrite,            // ReadAndWrite
     0x0000000000000000,   // AddressGranularity - GRA
     0x0000500012500000,   // AddressMinimum - MIN
-    0x00005000164fffff,   // AddressMaximum - MAX
+    0x0000500013ffffff,   // AddressMaximum - MAX
     0x0000000000000000,   // AddressTranslation - TRA
-    0x0000000004000000    // RangeLength - LEN
+    0x0000000001B00000    // RangeLength - LEN
   )
   Interrupt(ResourceConsumer, Level, ActiveHigh, Exclusive) { 634 }
   })

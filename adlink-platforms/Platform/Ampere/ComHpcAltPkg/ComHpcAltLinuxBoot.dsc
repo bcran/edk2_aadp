@@ -50,6 +50,8 @@
   #
   BoardPcieLib|Library/BoardPcieLib/BoardPcieLib.inf
 
+  IOExpanderLib|Platform/Ampere/JadePkg/Library/IOExpanderLib/IOExpanderLib.inf
+
 [LibraryClasses.common.DXE_RUNTIME_DRIVER]
   #
   # RTC Library: Common RTC
