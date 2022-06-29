@@ -426,13 +426,7 @@ APRIORI DXE {
   #
   INF Silicon/Ampere/AmpereAltraPkg/Drivers/IpmiBootDxe/IpmiBootDxe.inf
 
-  #
-  # USB 3.0 Renesas μPD70220x
-  #
-  INF Drivers/Xhci/RenesasFirmwarePD720202/RenesasFirmwarePD720202.inf
-  FILE FREEFORM = A059EBC4-D73D-4279-81BF-E4A89308B923 {
-    SECTION RAW = Drivers/RenesasFirmwarePD720202/K2026090.mem
-  }
+!include AdlinkAmpereAltra.fdf.inc
 
   #
   # EFI Redfish drivers

@@ -48,7 +48,7 @@
   #                              // significantly impact boot performance
   #  DEBUG_ERROR     0x80000000  // Error
   DEFINE DEBUG_PRINT_ERROR_LEVEL = 0x8000004F
-  DEFINE FIRMWARE_VER            = 2.04.100
+  DEFINE FIRMWARE_VER            = 2.05.100
   DEFINE SECURE_BOOT_ENABLE      = FALSE
   DEFINE TPM2_ENABLE             = TRUE
   DEFINE INCLUDE_TFTP_COMMAND    = TRUE
@@ -75,6 +75,8 @@
 
 # Include default Ampere Platform DSC file
 !include Silicon/Ampere/AmpereAltraPkg/AmpereAltraPkg.dsc.inc
+!include AdlinkAmpereAltra.dsc.inc
+
 
 ################################################################################
 #
@@ -101,16 +103,6 @@
   AcpiHelperLib|Platform/Ampere/AmperePlatformPkg/Library/AcpiHelperLib/AcpiHelperLib.inf
 
   #
-  # Pcie Board
-  #
-  BoardPcieLib|Library/BoardPcieLib/BoardPcieLib.inf
-
-  #
-  # Library for POST Code converting
-  #
-  ReportStatusCodeLib|MdeModulePkg/Library/DxeReportStatusCodeLib/DxeReportStatusCodeLib.inf
-  
-  #
   # EFI Redfish drivers
   #
 !if $(REDFISH_ENABLE) == TRUE
@@ -123,11 +115,6 @@
 
 [LibraryClasses.common.DXE_RUNTIME_DRIVER]
   CapsuleLib|MdeModulePkg/Library/DxeCapsuleLibFmp/DxeRuntimeCapsuleLib.inf
-
-  #
-  # RTC Library: Common RTC
-  #
-  RealTimeClockLib|Library/PCF8563RealTimeClockLib/PCF8563RealTimeClockLib.inf
 
 [LibraryClasses.common.UEFI_DRIVER, LibraryClasses.common.UEFI_APPLICATION, LibraryClasses.common.DXE_RUNTIME_DRIVER, LibraryClasses.common.DXE_DRIVER]
   SmbusLib|Platform/Ampere/JadePkg/Library/DxePlatformSmbusLib/DxePlatformSmbusLib.inf
@@ -192,9 +179,6 @@
   # Allow Redish Service while Secure boot is disabled
   gAmpereTokenSpaceGuid.PcdRedfishServiceStopIfSecureBootDisabled|FALSE
 !endif
-
-  # set baudrate to match with MMC
-  gArmPlatformTokenSpaceGuid.PcdSerialDbgUartBaudRate|57600
 
 [PcdsDynamicDefault.common.DEFAULT]
   # SMBIOS Type 0 - BIOS Information
@@ -294,24 +278,6 @@
   # Misc
   #
   Silicon/Ampere/AmpereAltraPkg/Drivers/IpmiBootDxe/IpmiBootDxe.inf
-
-  #
-  # USB 3.0 Renesas μPD70220x
-  #
-  Drivers/Xhci/RenesasFirmwarePD720202/RenesasFirmwarePD720202.inf {
-    <LibraryClasses>
-      DxeServicesLib|MdePkg/Library/DxeServicesLib/DxeServicesLib.inf
-  } 
-
-  #
-  # POST code thru MMC and utilize Intel POST code map
-  #
-  MdeModulePkg/Universal/StatusCodeHandler/RuntimeDxe/StatusCodeHandlerRuntimeDxe.inf {
-    <LibraryClasses>
-      PostCodeLib|Library/PostCodeLibMmc/PostCodeLibMmc.inf
-      MmcLib|Library/MmcLib/MmcLib.inf
-      PostCodeMapLib|PostCodeDebugFeaturePkg/Library/PostCodeMapLib/PostCodeMapLib.inf
-  }
 
   #
   # Redfish
