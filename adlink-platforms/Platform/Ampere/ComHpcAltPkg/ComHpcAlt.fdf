@@ -411,7 +411,7 @@ APRIORI DXE {
   #
   # HII
   #
-  INF Silicon/Ampere/AmpereAltraPkg/Drivers/PlatformInfoDxe/PlatformInfoDxe.inf
+  INF Platform/Ampere/ComHpcAltPkg/Drivers/PlatformInfoDxe/PlatformInfoDxe.inf
   INF Silicon/Ampere/AmpereAltraPkg/Drivers/MemInfoDxe/MemInfoDxe.inf
   INF Silicon/Ampere/AmpereAltraPkg/Drivers/CpuConfigDxe/CpuConfigDxe.inf
   INF Silicon/Ampere/AmpereAltraPkg/Drivers/AcpiConfigDxe/AcpiConfigDxe.inf
