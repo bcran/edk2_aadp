@@ -280,6 +280,10 @@
   Silicon/Ampere/AmpereAltraPkg/Drivers/IpmiBootDxe/IpmiBootDxe.inf
 
   #
+  MdeModulePkg/Application/BoardVersion/BoardVersion.inf {
+    <LibraryClasses>
+      NVLib|Library/NVLib/NVLib.inf
+  }
   # Redfish
   #
 !include RedfishPkg/Redfish.dsc.inc
