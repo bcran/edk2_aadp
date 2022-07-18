@@ -21,8 +21,8 @@ Ampere Mountain Jade code base & tools installation.
 # Files
 * make_ComHpcAlt.sh: Sample script to make ADLINK COM-HPC-ALT.
 * make_jade.sh: Sample script to make CRB Ampere Mt. Jade.
-* setup.sh: Sample script to install all source code and tools. Mind your own SSH connection setting if there is any.
-    * *setup.sh [TARGET_FOLDER, default=Ampere_Altra]*
+* setup.sh: A sample script to install all source code and tools. Mind your own SSH connection setting if there is any.
+    * *setup.sh [TARGET_FOLDER, default=edk2_aadp]*
 
 # Building EDK-II image
 
