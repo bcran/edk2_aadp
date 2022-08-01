@@ -23,6 +23,8 @@
 #include <Library/PrintLib.h>
 #include <Library/UefiBootServicesTableLib.h>
 #include <Library/UefiLib.h>
+#include <Library/PcdLib.h>
+#include <Library/I2cLib.h>
 
 #include "PlatformInfoHii.h"
 
@@ -105,6 +107,42 @@ GetCCIXLinkSpeed (
   return "Unknown";
 }
 
+EFI_STATUS
+GetLanFwVer (
+  IN OUT CHAR8 *Ver
+)
+{
+  EFI_STATUS Status;
+  UINT32     TmpLen;
+  UINT8 I2cCommand[] = "V";
+
+  Status = I2cProbe (PcdGet8(PcdNicI2cBusAddress), PcdGet32(PcdNicI2cBusSpeed));
+  if (EFI_ERROR (Status)) {
+    return EFI_DEVICE_ERROR;
+  }
+
+  //
+  // Send the slave address command for read version number
+  //
+  TmpLen = 1;
+  Status = I2cWrite (PcdGet8(PcdNicI2cBusAddress), PcdGet8(PcdNicI2cDeviceAddress), I2cCommand, &TmpLen);
+  if (EFI_ERROR (Status)) {
+    return EFI_DEVICE_ERROR;
+  }
+
+  //
+  // Read back the version string
+  //
+  TmpLen = 4;
+  Status = I2cRead (PcdGet8(PcdNicI2cBusAddress), PcdGet8(PcdNicI2cDeviceAddress), NULL, 0, (UINT8 *)Ver, &TmpLen);
+  if (EFI_ERROR (Status)) {
+    return EFI_DEVICE_ERROR;
+  }
+
+  Ver[4]=0;
+  return EFI_SUCCESS;
+}
+
 STATIC
 EFI_STATUS
 UpdatePlatformInfoScreen (
@@ -119,6 +157,9 @@ UpdatePlatformInfoScreen (
   EFI_IFR_GUID_LABEL *StartLabel;
   VOID               *EndOpCodeHandle;
   EFI_IFR_GUID_LABEL *EndLabel;
+  CHAR8 LAN_FW_VER[5];
+  CHAR8 LAN_FW_VER_NA[] = "NA";
+  CHAR8 *pLanFwVer;
 
   /* Get the Platform HOB */
   Hob = GetFirstGuidHob (&gPlatformInfoHobGuid);
@@ -141,6 +182,20 @@ UpdatePlatformInfoScreen (
   HiiSetString (
     HiiHandle,
     STRING_TOKEN (STR_PLATFORM_INFO_SCPBUILD_VALUE),
+    Str,
+    NULL
+    );
+
+  /* Broadcom MCU Version */
+  if (EFI_ERROR (GetLanFwVer(LAN_FW_VER))) {
+    pLanFwVer = LAN_FW_VER_NA;
+  } else {
+    pLanFwVer = LAN_FW_VER;
+  }
+  AsciiStrToUnicodeStrS ((const CHAR8 *)pLanFwVer, Str, MAX_STRING_SIZE);
+  HiiSetString (
+    HiiHandle,
+    STRING_TOKEN (STR_PLATFORM_INFO_LANMCUVER_VALUE),
     Str,
     NULL
     );

@@ -23,6 +23,9 @@
 #string STR_PLATFORM_INFO_SCPBUILD                  #language en-US "SCP FW Build"
 #string STR_PLATFORM_INFO_SCPBUILD_VALUE            #language en-US "0"
 
+#string STR_PLATFORM_INFO_LANMCUVER                    #language en-US "LAN MCU FW Version"
+#string STR_PLATFORM_INFO_LANMCUVER_VALUE              #language en-US "0"
+
 #string STR_PLATFORM_INFO_CPUINFO                   #language en-US "CPU"
 #string STR_PLATFORM_INFO_CPUINFO_VALUE             #language en-US " "
 

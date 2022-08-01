@@ -41,6 +41,13 @@ formset
       key    = 0;
 
     text
+      help   = STRING_TOKEN(STR_PLATFORM_INFO_LANMCUVER),
+      text   = STRING_TOKEN(STR_PLATFORM_INFO_LANMCUVER),
+      text   = STRING_TOKEN(STR_PLATFORM_INFO_LANMCUVER_VALUE),
+      flags  = 0,
+      key    = 0;
+
+    text
       help   = STRING_TOKEN(STR_PLATFORM_INFO_CPUINFO),
       text   = STRING_TOKEN(STR_PLATFORM_INFO_CPUINFO),
       text   = STRING_TOKEN(STR_PLATFORM_INFO_CPUINFO_VALUE),

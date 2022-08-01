@@ -25,6 +25,7 @@
   MdePkg/MdePkg.dec
   Silicon/Ampere/AmpereAltraPkg/AmpereAltraPkg.dec
   Silicon/Ampere/AmpereSiliconPkg/AmpereSiliconPkg.dec
+  AdlinkAmpereAltraPkg.dec
 
 [LibraryClasses]
   AmpereCpuLib
@@ -40,6 +41,8 @@
   UefiBootServicesTableLib
   UefiDriverEntryPoint
   UefiLib
+  PcdLib
+  I2cLib
 
 [Guids]
   gPlatformManagerFormsetGuid
@@ -47,6 +50,11 @@
   gPlatformInfoHobGuid
 
 [Protocols]
+
+[Pcd]
+  gAdlinkTokenSpaceGuid.PcdNicI2cBusAddress
+  gAdlinkTokenSpaceGuid.PcdNicI2cBusSpeed
+  gAdlinkTokenSpaceGuid.PcdNicI2cDeviceAddress
 
 [Depex]
   TRUE
