@@ -43,7 +43,7 @@ Ampere Mountain Jade code base & tools installation.
 # Flashing SCP/EDK-II
 * Following Capsule update steps works for v2.04.100.00 or later version, follow the instruction in release package to update BIOS otherwise.
 
-1. Copy **CapsuleApp.efi** , **[Board]_scp_*.cap** , **[Board]_tianocore_atf_*.cap** files from path *$PWD/BUILDS/[Board]_tianocore_atf_*/* into FAT32 USB and connect to target board.
+1. Copy **CapsuleApp.efi** , **BoardVersion.efi**, **[Board]_scp_*.cap** , **[Board]_tianocore_atf_*.cap** files from path *$PWD/BUILDS/[Board]_tianocore_atf_*/* into FAT32 USB and connect to target board.
 
 2. Power up the target and boot into UEFI shell. 
 

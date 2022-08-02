@@ -280,7 +280,7 @@
   Silicon/Ampere/AmpereAltraPkg/Drivers/IpmiBootDxe/IpmiBootDxe.inf
 
   #
-  MdeModulePkg/Application/BoardVersion/BoardVersion.inf {
+  Application/BoardVersion/BoardVersion.inf {
     <LibraryClasses>
       NVLib|Library/NVLib/NVLib.inf
   }
