@@ -48,7 +48,7 @@
   #                              // significantly impact boot performance
   #  DEBUG_ERROR     0x80000000  // Error
   DEFINE DEBUG_PRINT_ERROR_LEVEL = 0x8000004F
-  DEFINE FIRMWARE_VER            = 2.06.100
+  DEFINE FIRMWARE_VER            = 2.06.200
   DEFINE SECURE_BOOT_ENABLE      = FALSE
   DEFINE TPM2_ENABLE             = TRUE
   DEFINE INCLUDE_TFTP_COMMAND    = TRUE
@@ -280,10 +280,8 @@
   Silicon/Ampere/AmpereAltraPkg/Drivers/IpmiBootDxe/IpmiBootDxe.inf
 
   #
-  Application/BoardVersion/BoardVersion.inf {
-    <LibraryClasses>
-      NVLib|Library/NVLib/NVLib.inf
-  }
+  Application/BoardVersion/BoardVersion.inf
+  
   # Redfish
   #
 !include RedfishPkg/Redfish.dsc.inc
