@@ -25,6 +25,7 @@
 #include <Library/UefiLib.h>
 #include <Library/PcdLib.h>
 #include <Library/I2cLib.h>
+#include <Library/MmcLib.h>
 
 #include "PlatformInfoHii.h"
 
@@ -158,8 +159,9 @@ UpdatePlatformInfoScreen (
   VOID               *EndOpCodeHandle;
   EFI_IFR_GUID_LABEL *EndLabel;
   CHAR8 LAN_FW_VER[5];
-  CHAR8 LAN_FW_VER_NA[] = "NA";
-  CHAR8 *pLanFwVer;
+  EFI_STATUS         Status;
+  UINT8              Buffer[6];
+
 
   /* Get the Platform HOB */
   Hob = GetFirstGuidHob (&gPlatformInfoHobGuid);
@@ -187,18 +189,30 @@ UpdatePlatformInfoScreen (
     );
 
   /* Broadcom MCU Version */
-  if (EFI_ERROR (GetLanFwVer(LAN_FW_VER))) {
-    pLanFwVer = LAN_FW_VER_NA;
-  } else {
-    pLanFwVer = LAN_FW_VER;
-  }
-  AsciiStrToUnicodeStrS ((const CHAR8 *)pLanFwVer, Str, MAX_STRING_SIZE);
+  if (!EFI_ERROR (GetLanFwVer(LAN_FW_VER))) {
+    AsciiStrToUnicodeStrS ((const CHAR8 *)LAN_FW_VER, Str, MAX_STRING_SIZE);
   HiiSetString (
     HiiHandle,
     STRING_TOKEN (STR_PLATFORM_INFO_LANMCUVER_VALUE),
     Str,
     NULL
     );
+  }
+
+  /* Get MMC FW Version */
+  Status = MmcFirmwareVersion (Buffer, sizeof(Buffer));
+  AsciiStrToUnicodeStrS ((const CHAR8 *)Buffer, Str, MAX_STRING_SIZE);
+  if (!EFI_ERROR (Status)) {
+    HiiSetString (
+      HiiHandle,
+      STRING_TOKEN (STR_MMC_FIRMWARE_REV_VALUE),
+      Str,
+      NULL
+      );
+  }
+  else {
+    DEBUG ((DEBUG_ERROR, "%a : MMC firmware version retrieving error\n", __FUNCTION__));
+  }
 
   /* CPU Info */
   AsciiStrToUnicodeStrS ((const CHAR8 *)PlatformHob->CpuInfo, Str, MAX_STRING_SIZE);

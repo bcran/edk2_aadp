@@ -43,6 +43,7 @@
   UefiLib
   PcdLib
   I2cLib
+  MmcLib
 
 [Guids]
   gPlatformManagerFormsetGuid

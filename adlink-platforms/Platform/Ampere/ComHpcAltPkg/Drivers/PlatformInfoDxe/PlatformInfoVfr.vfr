@@ -41,7 +41,14 @@ formset
       key    = 0;
 
     text
-      help   = STRING_TOKEN(STR_PLATFORM_INFO_LANMCUVER),
+      help   = STRING_TOKEN(STR_MMC_FIRMWARE_REV_LABEL),
+      text   = STRING_TOKEN(STR_MMC_FIRMWARE_REV_LABEL),
+      text   = STRING_TOKEN(STR_MMC_FIRMWARE_REV_VALUE),
+      flags  = 0,
+      key    = 0;
+
+    text
+      help   = STRING_TOKEN(STR_PLATFORM_INFO_LANMCUVER_HELP),
       text   = STRING_TOKEN(STR_PLATFORM_INFO_LANMCUVER),
       text   = STRING_TOKEN(STR_PLATFORM_INFO_LANMCUVER_VALUE),
       flags  = 0,

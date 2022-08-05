@@ -23,8 +23,12 @@
 #string STR_PLATFORM_INFO_SCPBUILD                  #language en-US "SCP FW Build"
 #string STR_PLATFORM_INFO_SCPBUILD_VALUE            #language en-US "0"
 
-#string STR_PLATFORM_INFO_LANMCUVER                    #language en-US "LAN MCU FW Version"
-#string STR_PLATFORM_INFO_LANMCUVER_VALUE              #language en-US "0"
+#string STR_MMC_FIRMWARE_REV_LABEL                  #language en-US "MMC FW Version"
+#string STR_MMC_FIRMWARE_REV_VALUE                  #language en-US "Unknown"
+
+#string STR_PLATFORM_INFO_LANMCUVER_HELP            #language en-US "10G LAN MCU FW Version"
+#string STR_PLATFORM_INFO_LANMCUVER                 #language en-US "MCU FW Version"
+#string STR_PLATFORM_INFO_LANMCUVER_VALUE           #language en-US "NA"
 
 #string STR_PLATFORM_INFO_CPUINFO                   #language en-US "CPU"
 #string STR_PLATFORM_INFO_CPUINFO_VALUE             #language en-US " "
