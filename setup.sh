@@ -114,44 +114,42 @@ echo "==========================================================================
 cd $SILLICON_FAMILY
 if [ "eval $(ssh -T git@github.com-adlink | grep -q "authenticated")" != "" ] ; then
   echo "==========================================================================="
-  echo " CLone AmpereAltra-ATF-SCP with invited username/PAT"
-  echo "==========================================================================="
-  if [ -d "AmpereAltra-ATF-SCP" ] ; then
-    cd AmpereAltra-ATF-SCP
-    git remote set-url origin git@github.com-adlink:ADLINK/AmpereAltra-ATF-SCP.git
-    cd .. 
-  fi  
-  echo "==========================================================================="
   echo "replace HTTPS access with SSH access if authenticated"
   echo "==========================================================================="
   if [ -d "AmpereAltra-ATF-SCP" ] ; then
     cd AmpereAltra-ATF-SCP
     git remote set-url origin git@github.com-adlink:ADLINK/AmpereAltra-ATF-SCP.git
+    git checkout main
     cd .. 
   fi  
   if [ -d "edk2-platforms" ] ; then
     cd edk2-platforms
     git remote set-url origin git@github.com-adlink:ADLINK/edk2-platforms.git
+    git checkout adlink-v2.06.100
     cd .. 
   fi  
   if [ -d "OpenPlatformPkg" ] ; then
     cd OpenPlatformPkg
     git remote set-url origin git@github.com-adlink:ADLINK/OpenPlatformPkg.git
+    git checkout master
     cd .. 
   fi  
   if [ -d "edk2" ] ; then
     cd edk2
     git remote set-url origin git@github.com-adlink:ADLINK/edk2.git
+    git checkout ampere
     cd .. 
   fi  
   if [ -d "edk2-ampere-tools" ] ; then
     cd edk2-ampere-tools
     git remote set-url origin git@github.com-adlink:ADLINK/edk2-ampere-tools.git
+    git checkout adlink
     cd .. 
   fi  
   if [ -d "edk2_adlink-ampere-altra" ] ; then
     cd edk2_adlink-ampere-altra
     git remote set-url origin git@github.com-adlink:ADLINK/edk2_adlink-ampere-altra.git
+    git checkout master
     cd .. 
   fi  
   git remote set-url origin git@github.com-adlink:ADLINK/edk2_aadp.git

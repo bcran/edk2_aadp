@@ -1,24 +1,18 @@
 [submodule "AmpereAltra-ATF-SCP"]
 	path = AmpereAltra-ATF-SCP
 	url = https://github.com/ADLINK/AmpereAltra-ATF-SCP.git
-	branch = main
 [submodule "edk2-platforms"]
 	path = edk2-platforms
 	url = https://github.com/ADLINK/edk2-platforms.git
-	branch = adlink-v2.06.100
 [submodule "OpenPlatformPkg"]
 	path = OpenPlatformPkg
 	url = https://github.com/ADLINK/OpenPlatformPkg.git
-	branch = master
 [submodule "edk2"]
 	path = edk2
 	url = https://github.com/ADLINK/edk2.git
-	branch = ampere
 [submodule "edk2-ampere-tools"]
 	path = edk2-ampere-tools
 	url = https://github.com/ADLINK/edk2-ampere-tools.git
-	branch = adlink
 [submodule "edk2_adlink-ampere-altra"]
 	path = edk2_adlink-ampere-altra
 	url = https://github.com/ADLINK/edk2_adlink-ampere-altra.git
-	branch = master
