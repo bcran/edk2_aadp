@@ -29,7 +29,7 @@
 
 // Type0 Data
 #define VENDOR_TEMPLATE       "ADLINK\0"
-#define BIOS_VERSION_TEMPLATE "2.04.100.00\0"
+#define BIOS_VERSION_TEMPLATE "0123456789012345678901234567890123456789012345678901234567890123\0"
 #define RELEASE_DATE_TEMPLATE "MM/DD/YYYY\0"
 
 #define TYPE0_ADDITIONAL_STRINGS                    \
@@ -47,26 +47,25 @@
 #define ALTRA_MAX_FAMILY      "Altra Max\0"
 #define FAMILY_TEMPLATE       ALTRA_MAX_FAMILY
 
-#define TYPE1_ADDITIONAL_STRINGS                  \
+#define TYPE1_ADDITIONAL_STRINGS            \
   MANUFACTURER_TEMPLATE /* Manufacturer */  \
   PRODUCT_NAME_TEMPLATE /* Product Name */  \
-  "ES1\0"  		/* Version */        \
+  "ES1\0"  		          /* Version */       \
   SERIAL_TEMPLATE       /* Serial Number */ \
   SKU_TEMPLATE          /* SKU Number */    \
-  FAMILY_TEMPLATE       /* Family */	    \
-  "ES2\0"                /* Version */        \
-  "ES3\0"                /* Version */        \
-  "None\0"              /* Version */
+  "ES2\0"               /* Version */       \
+  "ES3\0"               /* Version */       \
+  ALTRA_FAMILY          /* CPU Family */    \
+  ALTRA_MAX_FAMILY      /* CPU Family */
 
-#define TYPE2_ADDITIONAL_STRINGS                   \
-  MANUFACTURER_TEMPLATE /* Manufacturer */   \
-  PRODUCT_NAME_TEMPLATE /* Product Name */   \
-  "ES1\0"  		/* Version */        \
-  "Serial Not Set\0"    /* Serial */         \
+#define TYPE2_ADDITIONAL_STRINGS            \
+  MANUFACTURER_TEMPLATE /* Manufacturer */  \
+  PRODUCT_NAME_TEMPLATE /* Product Name */  \
+  "ES1\0"  		          /* Version */       \
+  "Serial Not Set\0"    /* Serial */        \
   "Base of Chassis\0"   /* board location */ \
-  "ES2\0"                /* Version */        \
-  "ES3\0"                /* Version */        \
-  "None\0"              /* Version */
+  "ES2\0"               /* Version */       \
+  "ES3\0"               /* Version */
 
 #define CHASSIS_VERSION_TEMPLATE    "None               \0"
 #define CHASSIS_SERIAL_TEMPLATE     "Serial Not Set     \0"
@@ -86,7 +85,6 @@
 #define TYPE9_ADDITIONAL_STRINGS       \
   "Socket 0 Riser 1 x32 - Slot 1\0"
 
-#define  RISER_PRESENT      0
 //
 // IO Expander Assignment
 //
@@ -131,6 +129,16 @@
 
 #define TYPE41_ADDITIONAL_STRINGS       \
   "Onboard VGA\0"
+
+#define ADDITIONAL_STR_INDEX_1    0x01
+#define ADDITIONAL_STR_INDEX_2    0x02
+#define ADDITIONAL_STR_INDEX_3    0x03
+#define ADDITIONAL_STR_INDEX_4    0x04
+#define ADDITIONAL_STR_INDEX_5    0x05
+#define ADDITIONAL_STR_INDEX_6    0x06
+#define ADDITIONAL_STR_INDEX_7    0x07
+#define ADDITIONAL_STR_INDEX_8    0x08
+#define ADDITIONAL_STR_INDEX_9    0x09
 
 //
 // Type definition and contents of the default SMBIOS table.
@@ -184,23 +192,6 @@ typedef struct {
 } ARM_TYPE41;
 
 #pragma pack()
-
-//-------------------------------------
-//        SMBIOS Platform Common
-//-------------------------------------
-enum {
-  ADDITIONAL_STR_INDEX_1 = 1,
-  ADDITIONAL_STR_INDEX_2,
-  ADDITIONAL_STR_INDEX_3,
-  ADDITIONAL_STR_INDEX_4,
-  ADDITIONAL_STR_INDEX_5,
-  ADDITIONAL_STR_INDEX_6,
-  ADDITIONAL_STR_INDEX_7,
-  ADDITIONAL_STR_INDEX_8,
-  ADDITIONAL_STR_INDEX_9,
-  ADDITIONAL_STR_INDEX_MAX
-};
-
 
 // Type 0 BIOS information
 STATIC ARM_TYPE0 mArmDefaultType0 = {
@@ -806,12 +797,26 @@ MbIdRead (
 
   if (Val7 == 0) {
 	mArmDefaultType1.Base.Version = ADDITIONAL_STR_INDEX_3;
+	mArmDefaultType2.Base.Version = ADDITIONAL_STR_INDEX_3;
   } else if((Val7 == 1) && (Val6 == 1)) {
-	mArmDefaultType1.Base.Version = ADDITIONAL_STR_INDEX_7;
+	mArmDefaultType1.Base.Version = ADDITIONAL_STR_INDEX_6;
+	mArmDefaultType2.Base.Version = ADDITIONAL_STR_INDEX_6;
   } else if((Val7 == 1) && (Val6 == 0)) {
-	mArmDefaultType1.Base.Version = ADDITIONAL_STR_INDEX_8;
+	mArmDefaultType1.Base.Version = ADDITIONAL_STR_INDEX_7;
+	mArmDefaultType2.Base.Version = ADDITIONAL_STR_INDEX_7;
+  }
+}
+
+STATIC
+VOID
+UpdateCpuFamily (
+  VOID
+  )
+{
+  if (IsAc01Processor ()) {
+	  mArmDefaultType1.Base.Family = ADDITIONAL_STR_INDEX_8;
   } else {
-	mArmDefaultType1.Base.Version = ADDITIONAL_STR_INDEX_9;
+	  mArmDefaultType1.Base.Family = ADDITIONAL_STR_INDEX_9;
   }
 }
 
@@ -970,7 +975,7 @@ UpdateSmbiosType0 (
   CHAR8                               *PcdReleaseDate = NULL;
   CHAR8                               AsciiVersion[32];
   UINTN                               Index;
-  CHAR8                               BiosVersionStr[128];
+  CHAR8                               BiosVersionStr[sizeof (BIOS_VERSION_TEMPLATE)];
   CHAR8                               *StringPack;
   CHAR8                               SizeOfFirmwareVer;
   UINT16                              *FirmwareVersionPcdPtr;
@@ -1421,6 +1426,9 @@ InstallAllStructures (
   //Read MB ID
   MbIdRead();
 
+  //Update CPU family
+  UpdateCpuFamily();
+
   // Install Type 3 table
   InstallType3Structure (Smbios);
 
@@ -1501,7 +1509,6 @@ UpdateSmbiosType123 (
   EFI_SMBIOS_TABLE_HEADER *Record;
   UINTN                   StringIndex;
   UINT8                   *GuidPtr;
-  CHAR8                   *FamilyName;
 
   ASSERT (Smbios != NULL);
 
@@ -1514,14 +1521,12 @@ UpdateSmbiosType123 (
     if (Record->Type == SMBIOS_TYPE_SYSTEM_INFORMATION) {
       GuidPtr = (UINT8 *)&((SMBIOS_TABLE_TYPE1 *)Record)->Uuid;
       ConvertIpmiGuidToSmbiosGuid (GuidPtr, (UINT8 *)PcdGetPtr (PcdFruSystemUniqueID));
-      FamilyName = IsAc01Processor () ? ALTRA_FAMILY : ALTRA_MAX_FAMILY;
       StringIndex = ((SMBIOS_TABLE_TYPE1 *)Record)->Manufacturer;
       SmbiosUpdateString (Smbios, SmbiosHandle, StringIndex++, (CHAR8 *)PcdGetPtr (PcdFruProductManufacturerName));
       SmbiosUpdateString (Smbios, SmbiosHandle, StringIndex++, (CHAR8 *)PcdGetPtr (PcdFruProductName));
       SmbiosUpdateString (Smbios, SmbiosHandle, StringIndex++, (CHAR8 *)PcdGetPtr (PcdFruProductVersion));
       SmbiosUpdateString (Smbios, SmbiosHandle, StringIndex++, (CHAR8 *)PcdGetPtr (PcdFruProductSerialNumber));
       SmbiosUpdateString (Smbios, SmbiosHandle, StringIndex++, (CHAR8 *)PcdGetPtr (PcdFruProductExtra));
-      SmbiosUpdateString (Smbios, SmbiosHandle, StringIndex++, FamilyName);
     }
 
     //
