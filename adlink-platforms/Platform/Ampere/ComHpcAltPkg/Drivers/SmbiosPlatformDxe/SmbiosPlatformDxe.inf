@@ -32,7 +32,6 @@
   BaseMemoryLib
   DebugLib
   HobLib
-  IOExpanderLib
   IpmiCommandLib
   IpmiLib
   MemoryAllocationLib
