@@ -76,7 +76,7 @@
 # Include default Ampere Platform DSC file
 !include Silicon/Ampere/AmpereAltraPkg/AmpereAltraPkg.dsc.inc
 !include AdlinkAmpereAltra.dsc.inc
-
+!include AdlinkComHpc.dsc.inc
 
 ################################################################################
 #
