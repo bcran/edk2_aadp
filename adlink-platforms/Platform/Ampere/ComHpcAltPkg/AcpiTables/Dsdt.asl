@@ -651,6 +651,33 @@ DefinitionBlock("Dsdt.aml", "DSDT", 0x02, "Ampere", "Jade", 1) {
       })
     } // UART1
 
+    //
+    // UART3 PL011
+    Device(URT3) {
+      Name(_HID, "ARMH0011")
+      Name(_UID, 2)
+      Name(_CCA, ONE)
+      Method(_STA, 0, NotSerialized) {
+        return (0x0f)
+      }
+      Name(_CRS, ResourceTemplate() {
+        QWordMemory (
+          ResourceProducer,     // ResourceUsage
+          PosDecode,            // Decode
+          MinFixed,             // IsMinFixed
+          MaxFixed,             // IsMaxFixed
+          NonCacheable,         // Cacheable
+          ReadWrite,            // ReadAndWrite
+          0x0000000000000000,   // AddressGranularity - GRA
+          0x0000100002630000,   // AddressMinimum - MIN
+          0x0000100002630FFF,   // AddressMaximum - MAX
+          0x0000000000000000,   // AddressTranslation - TRA
+          0x0000000000001000    // RangeLength - LEN
+        )
+        Interrupt(ResourceConsumer, Level, ActiveHigh, Exclusive) { 101 }
+      })
+    } // UART3
+
     Device(HED0)
     {
         Name(_HID, EISAID("PNP0C33"))
