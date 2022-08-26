@@ -48,7 +48,7 @@
   #                              // significantly impact boot performance
   #  DEBUG_ERROR     0x80000000  // Error
   DEFINE DEBUG_PRINT_ERROR_LEVEL = 0x8000004F
-  DEFINE FIRMWARE_VER            = 2.04.100
+  DEFINE FIRMWARE_VER            = 2.04.100.07
   DEFINE SECURE_BOOT_ENABLE      = FALSE
   DEFINE TPM2_ENABLE             = TRUE
   DEFINE INCLUDE_TFTP_COMMAND    = TRUE
@@ -118,6 +118,8 @@
   RedfishPlatformCredentialLib|Platform/Ampere/JadePkg/Library/RedfishPlatformCredentialLib/RedfishPlatformCredentialLib.inf
   RedfishPlatformHostInterfaceLib|RedfishPkg/Library/PlatformHostInterfaceLibNull/PlatformHostInterfaceLibNull.inf
 !endif
+
+  NVLib|Platform/Ampere/ComHpcAltPkg/Library/NVLib/NVLib.inf
 
 [LibraryClasses.common.DXE_RUNTIME_DRIVER]
   CapsuleLib|MdeModulePkg/Library/DxeCapsuleLibFmp/DxeRuntimeCapsuleLib.inf
@@ -323,3 +325,8 @@
   # Platform Boot Manager
   #
   Platform/Ampere/AmperePlatformPkg/Drivers/PlatformBootManagerDxe/PlatformBootManagerDxe.inf
+
+  #
+  # Board Version shell app
+  #
+  Platform/Ampere/ComHpcAltPkg/Application/BoardVersion/BoardVersion.inf
