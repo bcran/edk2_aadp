@@ -95,7 +95,7 @@ fi
 echo "==========================================================================="
 echo "clone Ampere Altra ADLINK development platforms"
 echo "==========================================================================="
-cd $HOME
+# cd $HOME 
 SILLICON_FAMILY=$1
 if [ -z "$SILLICON_FAMILY" ]; then
   SILLICON_FAMILY="edk2_aadp"
@@ -158,7 +158,7 @@ echo "==========================================================================
 echo "set building environment"
 echo "==========================================================================="
 export WORKSPACE=$PWD
-source edk2_adlink-ampere-altra/tools/edk2/edksetup.sh --reconfig
+source edk2/edksetup.sh --reconfig
 source edk2_adlink-ampere-altra/tools/edk2.sh
 echo "==========================================================================="
 echo "Ready to build !!!"
