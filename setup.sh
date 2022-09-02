@@ -95,7 +95,7 @@ fi
 echo "==========================================================================="
 echo "clone Ampere Altra ADLINK development platforms"
 echo "==========================================================================="
-cd $HOME
+# cd $HOME 
 SILLICON_FAMILY=$1
 if [ -z "$SILLICON_FAMILY" ]; then
   SILLICON_FAMILY="edk2_aadp"
@@ -147,12 +147,14 @@ if [ "eval $(ssh -T git@github.com-adlink | grep -q "authenticated")" != "" ] ; 
     cd .. 
   fi  
   git remote set-url origin git@github.com-adlink:ADLINK/edk2_aadp.git
+  git checkout v2.04.100
+  git submodule update --init --recursive
 fi
 echo "==========================================================================="
 echo "set building environment"
 echo "==========================================================================="
 export WORKSPACE=$PWD
-source edk2_adlink-ampere-altra/tools/edk2/edksetup.sh --reconfig
+source edk2/edksetup.sh --reconfig
 source edk2_adlink-ampere-altra/tools/edk2.sh
 echo "==========================================================================="
 echo "Ready to build !!!"
