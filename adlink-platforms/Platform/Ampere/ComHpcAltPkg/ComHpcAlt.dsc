@@ -75,6 +75,8 @@
 
 # Include default Ampere Platform DSC file
 !include Silicon/Ampere/AmpereAltraPkg/AmpereAltraPkg.dsc.inc
+!include AdlinkAmpereAltra.dsc.inc
+!include AdlinkComHpc.dsc.inc
 
 ################################################################################
 #
@@ -101,16 +103,6 @@
   AcpiHelperLib|Platform/Ampere/AmperePlatformPkg/Library/AcpiHelperLib/AcpiHelperLib.inf
 
   #
-  # Pcie Board
-  #
-  BoardPcieLib|Library/BoardPcieLib/BoardPcieLib.inf
-
-  #
-  # Library for POST Code converting
-  #
-  ReportStatusCodeLib|MdeModulePkg/Library/DxeReportStatusCodeLib/DxeReportStatusCodeLib.inf
-  
-  #
   # EFI Redfish drivers
   #
 !if $(REDFISH_ENABLE) == TRUE
@@ -119,15 +111,8 @@
   RedfishPlatformHostInterfaceLib|RedfishPkg/Library/PlatformHostInterfaceLibNull/PlatformHostInterfaceLibNull.inf
 !endif
 
-  NVLib|Platform/Ampere/ComHpcAltPkg/Library/NVLib/NVLib.inf
-
 [LibraryClasses.common.DXE_RUNTIME_DRIVER]
   CapsuleLib|MdeModulePkg/Library/DxeCapsuleLibFmp/DxeRuntimeCapsuleLib.inf
-
-  #
-  # RTC Library: Common RTC
-  #
-  RealTimeClockLib|Library/PCF8563RealTimeClockLib/PCF8563RealTimeClockLib.inf
 
 [LibraryClasses.common.UEFI_DRIVER, LibraryClasses.common.UEFI_APPLICATION, LibraryClasses.common.DXE_RUNTIME_DRIVER, LibraryClasses.common.DXE_DRIVER]
   SmbusLib|Platform/Ampere/JadePkg/Library/DxePlatformSmbusLib/DxePlatformSmbusLib.inf
@@ -192,9 +177,6 @@
   # Allow Redish Service while Secure boot is disabled
   gAmpereTokenSpaceGuid.PcdRedfishServiceStopIfSecureBootDisabled|FALSE
 !endif
-
-  # set baudrate to match with MMC
-  gArmPlatformTokenSpaceGuid.PcdSerialDbgUartBaudRate|57600
 
 [PcdsDynamicDefault.common.DEFAULT]
   # SMBIOS Type 0 - BIOS Information
@@ -280,7 +262,7 @@
   #
   # HII
   #
-  Silicon/Ampere/AmpereAltraPkg/Drivers/PlatformInfoDxe/PlatformInfoDxe.inf
+  Platform/Ampere/ComHpcAltPkg/Drivers/PlatformInfoDxe/PlatformInfoDxe.inf
   Silicon/Ampere/AmpereAltraPkg/Drivers/MemInfoDxe/MemInfoDxe.inf
   Silicon/Ampere/AmpereAltraPkg/Drivers/CpuConfigDxe/CpuConfigDxe.inf
   Silicon/Ampere/AmpereAltraPkg/Drivers/AcpiConfigDxe/AcpiConfigDxe.inf
@@ -296,24 +278,8 @@
   Silicon/Ampere/AmpereAltraPkg/Drivers/IpmiBootDxe/IpmiBootDxe.inf
 
   #
-  # USB 3.0 Renesas μPD70220x
-  #
-  Drivers/Xhci/RenesasFirmwarePD720202/RenesasFirmwarePD720202.inf {
-    <LibraryClasses>
-      DxeServicesLib|MdePkg/Library/DxeServicesLib/DxeServicesLib.inf
-  } 
-
-  #
-  # POST code thru MMC and utilize Intel POST code map
-  #
-  MdeModulePkg/Universal/StatusCodeHandler/RuntimeDxe/StatusCodeHandlerRuntimeDxe.inf {
-    <LibraryClasses>
-      PostCodeLib|Library/PostCodeLibMmc/PostCodeLibMmc.inf
-      MmcLib|Library/MmcLib/MmcLib.inf
-      PostCodeMapLib|PostCodeDebugFeaturePkg/Library/PostCodeMapLib/PostCodeMapLib.inf
-  }
-
-  #
+  Application/BoardVersion/BoardVersion.inf
+  
   # Redfish
   #
 !include RedfishPkg/Redfish.dsc.inc
@@ -327,6 +293,3 @@
   Platform/Ampere/AmperePlatformPkg/Drivers/PlatformBootManagerDxe/PlatformBootManagerDxe.inf
 
   #
-  # Board Version shell app
-  #
-  Platform/Ampere/ComHpcAltPkg/Application/BoardVersion/BoardVersion.inf

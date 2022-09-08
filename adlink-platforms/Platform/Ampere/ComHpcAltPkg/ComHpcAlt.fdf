@@ -92,8 +92,6 @@ DATA = {
   #         0x48 (size of EFI_FIRMWARE_VOLUME_HEADER) = 0x2FFB8
   # This can speed up the Variable Dispatch a bit.
   0xB8, 0xFF, 0x02, 0x00,
-  # # 0x02ffb8 --> 0x01ffb8
-  # 0xB8, 0xFF, 0x01, 0x00,
   # FORMATTED: 0x5A #HEALTHY: 0xFE #Reserved: UINT16 #Reserved1: UINT32
   0x5A, 0xFE, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00
 }
@@ -413,7 +411,7 @@ APRIORI DXE {
   #
   # HII
   #
-  INF Silicon/Ampere/AmpereAltraPkg/Drivers/PlatformInfoDxe/PlatformInfoDxe.inf
+  INF Platform/Ampere/ComHpcAltPkg/Drivers/PlatformInfoDxe/PlatformInfoDxe.inf
   INF Silicon/Ampere/AmpereAltraPkg/Drivers/MemInfoDxe/MemInfoDxe.inf
   INF Silicon/Ampere/AmpereAltraPkg/Drivers/CpuConfigDxe/CpuConfigDxe.inf
   INF Silicon/Ampere/AmpereAltraPkg/Drivers/AcpiConfigDxe/AcpiConfigDxe.inf
@@ -428,13 +426,7 @@ APRIORI DXE {
   #
   INF Silicon/Ampere/AmpereAltraPkg/Drivers/IpmiBootDxe/IpmiBootDxe.inf
 
-  #
-  # USB 3.0 Renesas μPD70220x
-  #
-  INF Drivers/Xhci/RenesasFirmwarePD720202/RenesasFirmwarePD720202.inf
-  FILE FREEFORM = A059EBC4-D73D-4279-81BF-E4A89308B923 {
-    SECTION RAW = Drivers/RenesasFirmwarePD720202/K2026090.mem
-  }
+!include AdlinkAmpereAltra.fdf.inc
 
   #
   # EFI Redfish drivers

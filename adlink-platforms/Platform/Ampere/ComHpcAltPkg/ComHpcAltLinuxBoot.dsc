@@ -34,6 +34,8 @@
 
 # Include default Ampere Platform DSC file
 !include Silicon/Ampere/AmpereAltraPkg/AmpereAltraLinuxBootPkg.dsc.inc
+!include AdlinkAmpereAltra.dsc.inc
+!include AdlinkComHpc.dsc.inc
 
 #
 # Specific Platform Library
