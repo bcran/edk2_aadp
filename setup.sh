@@ -125,19 +125,19 @@ if [ "eval $(ssh -T git@github.com-adlink | grep -q "authenticated")" != "" ] ; 
   if [ -d "edk2-platforms" ] ; then
     cd edk2-platforms
     git remote set-url origin git@github.com-adlink:ADLINK/edk2-platforms.git
-    git checkout adlink-v2.06.100
+    # git checkout adlink-v2.06.100
     cd .. 
   fi  
   if [ -d "OpenPlatformPkg" ] ; then
     cd OpenPlatformPkg
     git remote set-url origin git@github.com-adlink:ADLINK/OpenPlatformPkg.git
-    git checkout master
+    # git checkout master
     cd .. 
   fi  
   if [ -d "edk2" ] ; then
     cd edk2
     git remote set-url origin git@github.com-adlink:ADLINK/edk2.git
-    git checkout ampere
+    # git checkout ampere
     cd .. 
   fi  
   if [ -d "edk2-ampere-tools" ] ; then
