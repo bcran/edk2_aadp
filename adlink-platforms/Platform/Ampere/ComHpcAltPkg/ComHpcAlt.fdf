@@ -57,7 +57,7 @@ FV = FVMAIN_COMPACT
 #
 # NV Variables
 # Offset: 0x00740000
-# Size:   0x00030000
+# Size:   0x00080000
 #
 0x00740000|0x00030000
 gEfiMdeModulePkgTokenSpaceGuid.PcdFlashNvStorageVariableBase64|gEfiMdeModulePkgTokenSpaceGuid.PcdFlashNvStorageVariableSize
@@ -76,9 +76,9 @@ DATA = {
   # Signature "_FVH"       # Attributes
   0x5f, 0x46, 0x56, 0x48, 0xff, 0xfe, 0x04, 0x00,
   # HeaderLength # CheckSum # ExtHeaderOffset #Reserved #Revision
-  0x48, 0x00, 0x2D, 0x09, 0x00, 0x00, 0x00, 0x02,
-  # Blockmap[0]: 0x3 Blocks * 0x10000 Bytes / Block
-  0x03, 0x00, 0x00, 0x00, 0x00, 0x00, 0x01, 0x00,
+  0x48, 0x00, 0x2A, 0x09, 0x00, 0x00, 0x00, 0x02,
+  # Blockmap[0]: 0x8 Blocks * 0x10000 Bytes / Block
+  0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x01, 0x00,
   # Blockmap[1]: End
   0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
   ## This is the VARIABLE_STORE_HEADER
@@ -163,11 +163,12 @@ APRIORI PEI {
   INF MdeModulePkg/Universal/ReportStatusCodeRouter/Pei/ReportStatusCodeRouterPei.inf
   INF MdeModulePkg/Universal/StatusCodeHandler/Pei/StatusCodeHandlerPei.inf
   INF Silicon/Ampere/AmpereAltraPkg/Drivers/PcieInitPei/PcieInitPei.inf
+  INF Silicon/Ampere/AmpereAltraPkg/Drivers/SmbusHcPei/SmbusHcPei.inf
 
-!if $(TPM2_ENABLE) == TRUE
-  INF MdeModulePkg/Universal/ResetSystemPei/ResetSystemPei.inf
-  INF Silicon/Ampere/AmpereAltraPkg/Drivers/Tcg2Pei/Tcg2Pei.inf
-!endif
+  #
+  # IPMI
+  #
+  #INF Silicon/Ampere/AmpereSiliconPkg/Drivers/IpmiSsif/IpmiSsifPeim.inf
 
   #
   # Print platform information before passing control into the Driver Execution Environment (DXE) phase
@@ -183,6 +184,11 @@ APRIORI PEI {
       SECTION FV_IMAGE = FVMAIN
     }
   }
+
+!if $(TPM2_ENABLE) == TRUE
+  INF MdeModulePkg/Universal/ResetSystemPei/ResetSystemPei.inf
+  INF Silicon/Ampere/AmpereAltraPkg/Drivers/Tcg2Pei/Tcg2Pei.inf
+!endif
 
 [FV.FvMain]
 FvAlignment        = 16
@@ -211,6 +217,7 @@ APRIORI DXE {
   INF ArmPkg/Drivers/MmCommunicationDxe/MmCommunication.inf
   INF Silicon/Ampere/AmpereAltraPkg/Drivers/FlashFvbDxe/FlashFvbDxe.inf
   INF ArmPkg/Drivers/ArmGic/ArmGicDxe.inf
+  INF Silicon/Ampere/AmpereAltraPkg/Drivers/PlatformInitDxe/PlatformInitDxe.inf
 }
 
   INF MdeModulePkg/Core/Dxe/DxeMain.inf
@@ -265,9 +272,14 @@ APRIORI DXE {
   INF ArmPkg/Drivers/TimerDxe/TimerDxe.inf
 
   #
-  # FailSafe and Watchdog Timer
+  # Initialize works at Dxe phase
   #
-  INF Silicon/Ampere/AmpereAltraPkg/Drivers/FailSafeDxe/FailSafeDxe.inf
+  INF Silicon/Ampere/AmpereAltraPkg/Drivers/PlatformInitDxe/PlatformInitDxe.inf
+
+  #
+  # Watchdog Timer
+  #
+  INF ArmPkg/Drivers/GenericWatchdogDxe/GenericWatchdogDxe.inf
 
   #
   # ARM GIC Dxe
@@ -343,7 +355,7 @@ APRIORI DXE {
   #
   # IPMI
   #
-  #INF Silicon/Ampere/AmpereSiliconPkg/Drivers/IpmiSsifDxe/IpmiSsifDxe.inf
+  #INF Silicon/Ampere/AmpereSiliconPkg/Drivers/IpmiSsif/IpmiSsifDxe.inf
 
   #
   # UEFI application (Shell Embedded Boot Loader)
@@ -388,8 +400,9 @@ APRIORI DXE {
   # SMBIOS
   #
   INF MdeModulePkg/Universal/SmbiosDxe/SmbiosDxe.inf
+  INF ArmPkg/Universal/Smbios/ProcessorSubClassDxe/ProcessorSubClassDxe.inf
   INF Platform/Ampere/ComHpcAltPkg/Drivers/SmbiosPlatformDxe/SmbiosPlatformDxe.inf
-  INF Drivers/SmbiosCpuDxe/SmbiosCpuDxe.inf
+  #INF Drivers/SmbiosCpuDxe/SmbiosCpuDxe.inf
   INF Platform/Ampere/JadePkg/Drivers/SmbiosMemInfoDxe/SmbiosMemInfoDxe.inf
 
   #
@@ -409,6 +422,11 @@ APRIORI DXE {
   INF Silicon/Ampere/AmpereAltraPkg/Application/EnrollAmpereSecureKey/EaskDynamicCommand.inf
 
   #
+  # Ipmi utilities
+  #
+  #INF   Silicon/Ampere/AmpereAltraPkg/Application/IpmiUtil/IpmiUtilDynamicCommand.inf
+
+  #
   # HII
   #
   INF Platform/Ampere/ComHpcAltPkg/Drivers/PlatformInfoDxe/PlatformInfoDxe.inf
@@ -424,7 +442,7 @@ APRIORI DXE {
   #
   # Misc
   #
-  INF Silicon/Ampere/AmpereAltraPkg/Drivers/IpmiBootDxe/IpmiBootDxe.inf
+  #INF Silicon/Ampere/AmpereAltraPkg/Drivers/IpmiBootDxe/IpmiBootDxe.inf
 
 !include AdlinkAmpereAltra.fdf.inc
 
