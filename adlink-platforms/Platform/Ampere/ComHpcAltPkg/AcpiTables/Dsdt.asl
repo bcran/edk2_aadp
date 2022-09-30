@@ -994,126 +994,80 @@ DefinitionBlock("Dsdt.aml", "DSDT", 0x02, "Ampere", "Jade", 1) {
     }
 
 //
-//GPIO 0 to 7
-//
-
-  Device(GPO0) {
-  Name(_HID, "APMC0D07")
-  Name(_ADR, 0)
-  Name(_UID, 0)
-
-  Name (_CRS, ResourceTemplate ()  {
-    //Memory32Fixed (ReadWrite, 0x602E0000, 0x10000)
-    QWordMemory (
-      ResourceConsumer,
-      ,
-      MinFixed,
-      MaxFixed,
-      NonCacheable,
-      ReadWrite,
-      0x0000000000000000,
-      0x00001000026F0000,
-      0x00001000026FFFFF,
-      0x0000000000000000,
-      0x0000000000010000
-    )
-    Interrupt(ResourceConsumer, Level, ActiveHigh, Exclusive) { 476 }
-  })
-
-  Device(PRTa) {
-    Name(_ADR, 0)
-    Name(_UID, 0)
-    Name(_DSD, Package () {
-      ToUUID("daffd814-6eba-4d8c-8a91-bc9bbf4aa301"),
-      Package () {
-        Package () {"reg", 0},
-        Package () {"snps,nr-gpios", 8},
+    // GPIO 0-7
+    //
+    Device(GPO0) {
+      Name(_HID, "APMC0D81")
+      Name(_UID, 0)
+      Name(_CRS, ResourceTemplate() {
+        QWordMemory(
+          ResourceConsumer,
+          PosDecode,
+          MinFixed,
+          MaxFixed,
+          NonCacheable,
+          ReadWrite,
+          0x0000000000000000,
+          0x00001000026F0000,
+          0x00001000026FFFFF,
+          0x0000000000000000,
+          0x0000000000010000
+        )
+        Interrupt(ResourceConsumer, Level, ActiveLow, Exclusive) {
+          72, 73, 74, 75, 76, 77, 78, 79
+        }
+      })
+      Device(PRTA) {
+        Name(_DSD, Package() {
+          ToUUID("daffd814-6eba-4d8c-8a91-bc9bbf4aa301"),
+          Package() {
+            Package() {"reg", 0},
+            Package() {"snps,nr-gpios", 8},
+            Package() {"ngpios", 8} // future compatible
+          }
+        })
       }
-    })
-  }
+    }
 
-  }
+    //
+    // GPIO 8-15 secure domain
+    //
 
-//
-//GPIO 16 to 23
-//
-
-  Device(GPO1) {
-  Name(_HID, "APMC0D07")
-  Name(_ADR, 0)
-  Name(_UID, 1)
-
-  Name (_CRS, ResourceTemplate ()  {
-    //Memory32Fixed (ReadWrite, 0x602E0000, 0x10000)
-    QWordMemory (
-      ResourceConsumer,
-      ,
-      MinFixed,
-      MaxFixed,
-      NonCacheable,
-      ReadWrite,
-      0x0000000000000000,
-      0x00001000027B0000,
-      0x00001000027BFFFF,
-      0x0000000000000000,
-      0x0000000000010000
-    )
-    Interrupt(ResourceConsumer, Level, ActiveHigh, Exclusive) { 477 }
-  })
-
-  Device(PRTa) {
-    Name(_ADR, 0)
-    Name(_UID, 0)
-    Name(_DSD, Package () {
-      ToUUID("daffd814-6eba-4d8c-8a91-bc9bbf4aa301"),
-      Package () {
-        Package () {"reg", 0},
-        Package () {"snps,nr-gpios", 8},
+    //
+    // GPIO 16-23
+    //
+    Device(GPO2) {
+      Name(_HID, "APMC0D81")
+      Name(_UID, 2)
+      Name(_CRS, ResourceTemplate() {
+        QWordMemory (
+          ResourceConsumer,
+          PosDecode,
+          MinFixed,
+          MaxFixed,
+          NonCacheable,
+          ReadWrite,
+          0x0000000000000000,
+          0x00001000027B0000,
+          0x00001000027BFFFF,
+          0x0000000000000000,
+          0x0000000000010000
+        )
+        Interrupt(ResourceConsumer, Level, ActiveLow, Exclusive) {
+          320, 321, 322, 323, 324, 325, 326, 327
+        }
+      })
+      Device(PRTA) {
+        Name(_DSD, Package() {
+          ToUUID("daffd814-6eba-4d8c-8a91-bc9bbf4aa301"),
+          Package() {
+            Package() {"reg", 0},
+            Package() {"snps,nr-gpios", 8},
+            Package() {"ngpios", 8} // future compatible
+          }
+        })
       }
-    })
-  }
-
-  }
-
-//
-//GPI 0 to 7
-//
-
-  Device(GPI0) {
-  Name(_HID, "APMC0D07")
-  Name(_ADR, 0)
-  Name(_UID, 2)
-
-  Name (_CRS, ResourceTemplate ()  {
-    //Memory32Fixed (ReadWrite, 0x602E0000, 0x10000)
-    QWordMemory (
-      ResourceConsumer,
-      ,
-      MinFixed,
-      MaxFixed,
-      NonCacheable,
-      ReadOnly,
-      0x0000000000000000,
-      0x00001000026D0000,
-      0x00001000026DFFFF,
-      0x0000000000000000,
-      0x0000000000010000
-    )
-  })
-
-  Device(PRTa) {
-    Name(_ADR, 0)
-    Name(_UID, 0)
-    Name(_DSD, Package () {
-      ToUUID("daffd814-6eba-4d8c-8a91-bc9bbf4aa301"),
-      Package () {
-        Package () {"reg", 0},
-        Package () {"snps,nr-gpios", 8},
-      }
-    })
-  }
-
-  }
+    }
 
     Include ("PCI-S0.Rca01.asi")
     Include ("PCI-S0.asi")
