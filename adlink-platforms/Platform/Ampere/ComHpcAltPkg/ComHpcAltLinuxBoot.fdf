@@ -85,6 +85,7 @@ APRIORI DXE {
   INF MdeModulePkg/Universal/PCD/Dxe/Pcd.inf
   INF ArmPkg/Drivers/CpuDxe/CpuDxe.inf
   INF ArmPkg/Drivers/MmCommunicationDxe/MmCommunication.inf
+  INF Silicon/Ampere/AmpereAltraPkg/Drivers/PlatformInitDxe/PlatformInitDxe.inf
 }
 
   INF MdeModulePkg/Core/Dxe/DxeMain.inf
@@ -121,6 +122,16 @@ APRIORI DXE {
   INF ArmPkg/Drivers/TimerDxe/TimerDxe.inf
 
   #
+  # Initialize works at Dxe phase
+  #
+  INF Silicon/Ampere/AmpereAltraPkg/Drivers/PlatformInitDxe/PlatformInitDxe.inf
+
+  #
+  # Watchdog Timer
+  #
+  INF ArmPkg/Drivers/GenericWatchdogDxe/GenericWatchdogDxe.inf
+
+  #
   # ARM GIC Dxe
   #
   INF ArmPkg/Drivers/ArmGic/ArmGicDxe.inf
@@ -133,7 +144,7 @@ APRIORI DXE {
   #
   # IPMI
   #
-  #INF Silicon/Ampere/AmpereSiliconPkg/Drivers/IpmiSsifDxe/IpmiSsifDxe.inf
+  #INF Silicon/Ampere/AmpereSiliconPkg/Drivers/IpmiSsif/IpmiSsifDxe.inf
 
   #
   # Linuxboot in Flash Support
@@ -144,11 +155,6 @@ APRIORI DXE {
   # Bds
   #
   INF MdeModulePkg/Universal/BdsDxe/BdsDxe.inf
-
-  #
-  # Driver to handle HW Watchdog
-  #
-  INF Silicon/Ampere/AmpereAltraPkg/Drivers/FailSafeDxe/FailSafeDxe.inf
 
   #
   # ACPI
@@ -163,8 +169,8 @@ APRIORI DXE {
   # SMBIOS
   #
   INF MdeModulePkg/Universal/SmbiosDxe/SmbiosDxe.inf
+  INF ArmPkg/Universal/Smbios/ProcessorSubClassDxe/ProcessorSubClassDxe.inf
   INF Platform/Ampere/ComHpcAltPkg/Drivers/SmbiosPlatformDxe/SmbiosPlatformDxe.inf
-  INF Drivers/SmbiosCpuDxe/SmbiosCpuDxe.inf
   INF Platform/Ampere/JadePkg/Drivers/SmbiosMemInfoDxe/SmbiosMemInfoDxe.inf
 
   #
@@ -207,6 +213,12 @@ APRIORI PEI {
   INF ArmPkg/Drivers/CpuPei/CpuPei.inf
   INF MdeModulePkg/Universal/PCD/Pei/Pcd.inf
   INF MdeModulePkg/Universal/Variable/Pei/VariablePei.inf
+  INF Silicon/Ampere/AmpereAltraPkg/Drivers/SmbusHcPei/SmbusHcPei.inf
+
+  #
+  # IPMI
+  #
+  #INF Silicon/Ampere/AmpereSiliconPkg/Drivers/IpmiSsif/IpmiSsifPeim.inf
 
   INF MdeModulePkg/Core/DxeIplPeim/DxeIpl.inf
 

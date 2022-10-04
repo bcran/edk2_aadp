@@ -1,6 +1,6 @@
 ## @file
 #
-# Copyright (c) 2020 - 2021, Ampere Computing LLC. All rights reserved.<BR>
+# Copyright (c) 2020 - 2022, Ampere Computing LLC. All rights reserved.<BR>
 #
 # SPDX-License-Identifier: BSD-2-Clause-Patent
 #
@@ -27,7 +27,7 @@
   # -D FLAG=VALUE
   #
   DEFINE DEBUG_PRINT_ERROR_LEVEL = 0x8000000F
-  DEFINE FIRMWARE_VER            = 2.04.100
+  DEFINE FIRMWARE_VER            = 2.08.100
   DEFINE EDK2_SKIP_PEICORE       = TRUE
 
 !include MdePkg/MdeLibs.dsc.inc
@@ -54,6 +54,11 @@
 
   IOExpanderLib|Platform/Ampere/JadePkg/Library/IOExpanderLib/IOExpanderLib.inf
 
+  PlatformBmcReadyLib|Platform/Ampere/JadePkg/Library/PlatformBmcReadyLib/PlatformBmcReadyLib.inf
+
+[LibraryClasses.common.PEIM]
+  SmbusLib|MdePkg/Library/PeiSmbusLibSmbus2Ppi/PeiSmbusLibSmbus2Ppi.inf
+
 [LibraryClasses.common.DXE_RUNTIME_DRIVER]
   #
   # RTC Library: Common RTC
@@ -61,7 +66,7 @@
   RealTimeClockLib|Library/PCF8563RealTimeClockLib/PCF8563RealTimeClockLib.inf
 
 [LibraryClasses.common.UEFI_DRIVER, LibraryClasses.common.UEFI_APPLICATION, LibraryClasses.common.DXE_RUNTIME_DRIVER, LibraryClasses.common.DXE_DRIVER]
-  SmbusLib|Platform/Ampere/JadePkg/Library/DxePlatformSmbusLib/DxePlatformSmbusLib.inf
+  SmbusLib|MdePkg/Library/DxeSmbusLib/DxeSmbusLib.inf
 
 [PcdsDynamicDefault.common.DEFAULT]
   # SMBIOS Type 0 - BIOS Information
@@ -100,14 +105,9 @@
   # SMBIOS
   #
   MdeModulePkg/Universal/SmbiosDxe/SmbiosDxe.inf
+  ArmPkg/Universal/Smbios/ProcessorSubClassDxe/ProcessorSubClassDxe.inf
   Platform/Ampere/ComHpcAltPkg/Drivers/SmbiosPlatformDxe/SmbiosPlatformDxe.inf
-  Drivers/SmbiosCpuDxe/SmbiosCpuDxe.inf
   Platform/Ampere/JadePkg/Drivers/SmbiosMemInfoDxe/SmbiosMemInfoDxe.inf
-
-  #
-  # FailSafeDxe added to prevent watchdog from resetting the system
-  #
-  Silicon/Ampere/AmpereAltraPkg/Drivers/FailSafeDxe/FailSafeDxe.inf
 
   #
   # USB 3.0 Renesas μPD70220x
@@ -116,4 +116,3 @@
     <LibraryClasses>
       DxeServicesLib|MdePkg/Library/DxeServicesLib/DxeServicesLib.inf
   } 
-
