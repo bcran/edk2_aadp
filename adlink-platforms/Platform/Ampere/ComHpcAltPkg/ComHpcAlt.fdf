@@ -427,6 +427,7 @@ APRIORI DXE {
   INF Silicon/Ampere/AmpereAltraPkg/Drivers/IpmiBootDxe/IpmiBootDxe.inf
 
 !include AdlinkAmpereAltra.fdf.inc
+!include AdlinkComHpc.fdf.inc
 
   #
   # EFI Redfish drivers
