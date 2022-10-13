@@ -1,0 +1,245 @@
+===============================================================================
+Platform                : Ampere Altra/Max
+Supported SPI ROM       : MX25L25673G
+===============================================================================
+BIOS BIN FIle : ComHpcAlt_tianocore_atf_2.08.100.00.bin
+Release Date  : 2022/10/04
+Release Time  : 16:54:20
+CheckSum      : 0xD6A95B00
+POST Message  : 2.08.100.00 Build 20221004 ATF 2.10
+Size          : 32MB
+BIOS BIN FIle : ComHpcAlt_tianocore_atf_2.08.100.00.A1.bin
+Release Date  : 2022/10/04
+Release Time  : 16:53:23
+CheckSum      : 0xD6AABA27
+POST Message  : 2.08.100.00.A1 Build 20221004 ATF 2.10
+Size          : 32MB
+===============================================================================
+1. Update for v2.08.100-ampere.
+2. Initialize GPIO which set gpio511 as GPI.
+===============================================================================
+BIOS BIN FIle : ComHpcAlt_tianocore_atf_2.06.100.05.bin
+Release Date  : 2022/08/15
+Release Time  : 17:42:43
+CheckSum      : 0xD0C8A45A
+POST Message  : 2.06.100.05 Build 20220815 ATF 2.10
+Size          : 32MB
+BIOS BIN FIle : ComHpcAlt_tianocore_atf_2.06.100.05.A1.bin
+Release Date  : 2022/08/15
+Release Time  : 17:41:51
+CheckSum      : 0xD0CA06FC
+POST Message  : 2.06.100.05.A1 Build 20220815 ATF 2.10
+Size          : 32MB
+===============================================================================
+1. Fix MMIO resource settings for RCA0/1.
+2. Add "BIOS Load Default" button support over CPU_BIOS_RECOVER_GPIOAC6.
+3. a. Fix DMI type 1 info.
+   b. Fix DMI Type 1 CPU family info.
+   c. Fix DMI Type 2 version info.
+===============================================================================
+BIOS BIN FIle : ComHpcAlt_tianocore_atf_2.06.100.04.bin
+Release Date  : 2022/08/09
+Release Time  : 14:39:44
+CheckSum      : 0xD0C8B0CB
+POST Message  : 2.06.100.04 Build 20220809 ATF 2.10
+Size          : 32MB
+BIOS BIN FIle : ComHpcAlt_tianocore_atf_2.06.100.04.A1.bin
+Release Date  : 2022/08/09
+Release Time  : 14:40:23
+CheckSum      : 0xD0CA6DD2
+POST Message  : 2.06.100.04.A1 Build 20220809 ATF 2.10
+Size          : 32MB
+===============================================================================
+1. Disable MMC version info. support for A1 board stepping.
+2. Disable ASPM in ACPI table FADT.
+===============================================================================
+BIOS BIN FIle : ComHpcAlt_tianocore_atf_2.06.100.03.bin
+Release Date  : 2022/08/05
+Release Time  : 11:48:02
+CheckSum      : 0xD0C8996C
+POST Message  : 2.06.100.03 Build 20220805 ATF 2.10
+Size          : 32MB
+===============================================================================
+1. Add MMC FW version information; MMC FW must be v2.04 or newer, there are issues for A1 still with MMC FW v1.09.
+2. Add UART3 support.
+3. Add 10G LAN MCU FW version information.
+===============================================================================
+BIOS BIN FIle : ComHpcAlt_tianocore_atf_2.06.100.02.bin
+Release Date  : 2022/07/13
+Release Time  : 12:24:47
+CheckSum      : 0xD0C17BAC
+POST Message  : 2.06.100.02 Build 20220713 ATF 2.10
+Size          : 32MB
+BIOS BIN FIle : ComHpcAlt_tianocore_atf_2.06.100.02.A1.bin
+Release Date  : 2022/07/13
+Release Time  : 12:33:59
+CheckSum      : 0xD0C09156
+POST Message  : 2.06.100.02.A1 Build 20220713 ATF 2.10
+Size          : 32MB
+===============================================================================
+1. Created a library to read the board setting NV variable NV_SI_RO_BOARD_I2C_VRD_CONFIG_INFO to determine the board revision.
+2. Developed an UEFI shell application to get the boardversion
+3. Created a single script file for firmware update.
+===============================================================================
+BIOS BIN FIle : ComHpcAlt_tianocore_atf_2.06.100.01.bin
+Release Date  : 2022/07/05
+Release Time  : 16:13:51
+CheckSum      : 0xD0C7C57A
+POST Message  : 2.06.100.01 Build 20220705 ATF 2.10
+BIOS BIN FIle : ComHpcAlt_tianocore_atf_2.06.100.01.A1.bin
+Release Date  : 2022/07/05
+Release Time  : 16:12:03
+CheckSum      : 0xD0C8B308
+POST Message  : 2.06.100.01.A1 Build 20220705 ATF 2.10
+Size          : 32MB
+===============================================================================
+1. Update SCP FW from 2.06 to 2.10.
+2. Add the ASPM option for each PCIe Root Complex.
+===============================================================================
+BIOS BIN FIle : ComHpcAlt_tianocore_atf_2.06.100.00.bin
+Release Date  : 2022/06/30
+Release Time  : 11:35:04
+CheckSum      : 0xD0A60129
+POST Message  : 2.06.100.00 Build 20220630 ATF 2.06
+BIOS BIN FIle : ComHpcAlt_tianocore_atf_2.06.100.00.A1.bin
+Release Date  : 2022/06/30
+Release Time  : 11:34:37
+CheckSum      : 0xD0A626D5
+POST Message  : 2.06.100.00.A1 Build 20220630 ATF 2.06
+Size          : 32MB
+===============================================================================
+1. Update CRB code to V2.06.100-ampere.
+===============================================================================
+BIOS BIN FIle : ComHpcAlt_tianocore_atf_2.04.100.06.bin
+Release Date  : 2022/06/23
+Release Time  : 12:39:45
+CheckSum      : 0xD0BAC6FB
+POST Message  : 2.04.100.06 Build 20220623 ATF 2.06
+Size          : 32MB
+BIOS BIN FIle : ComHpcAlt_tianocore_atf_2.04.100.06.A1.bin
+Release Date  : 2022/06/23
+Release Time  : 12:41:49
+CheckSum      : 0xD0B98AA6
+POST Message  : 2.04.100.06.A1 Build 20220623 ATF 2.06
+Size          : 32MB
+===============================================================================
+1. Added UEFI setup option to configure PCIe Speed
+2. Default speed configured to GEN3
+3. Updated UUID, so NVRAM will be updated via capsule update
+===============================================================================
+BIOS BIN FIle : ComHpcAlt_tianocore_atf_2.04.100.05.bin
+Release Date  : 2022/06/07
+Release Time  : 19:56:23
+CheckSum      : 0xD0C4BADF
+POST Message  : 2.04.100.05 Build 20220607 ATF 2.06
+Size          : 32MB
+BIOS BIN FIle : ComHpcAlt_tianocore_atf_2.04.100.05.A1.bin
+Release Date  : 2022/06/07
+Release Time  : 19:57:10
+CheckSum      : 0xD0C4F4EC
+POST Message  : 2.04.100.05.A1 Build 20220607 ATF 2.06
+Size          : 32MB
+===============================================================================
+1. Remove IPMI SSIF interface from ACPI.
+===============================================================================
+BIOS BIN FIle : ComHpcAlt_tianocore_atf_2.04.100.04.bin
+Release Date  : 2022/05/22
+Release Time  : 21:01:19
+CheckSum      : 0xD0C831E7
+POST Message  : 2.04.100.04 Build 20220522 ATF 2.06
+BIOS BIN FIle : ComHpcAlt_tianocore_atf_2.04.100.04.A1.bin
+Release Date  : 2022/06/06
+Release Time  : 10:38:00
+CheckSum      : 0xD0C6AC12
+POST Message  : 2.04.100.04.A1 Build 20220606 ATF 2.06
+Size          : 32MB
+===============================================================================
+1. Support ATF FW version number display attached to BIOS version number.
+===============================================================================
+BIOS BIN FIle : ComHpcAlt_tianocore_atf_2.04.100.03.bin
+Release Date  : 2022/05/03
+Release Time  : 23:22:43
+CheckSum      : 0xD0C86BA3
+POST Message  : 2.04.100.03 Build 20220503
+Size          : 32MB
+===============================================================================
+1. Fix system hang with "Synchronous Exception" with large USB drive inserted.
+===============================================================================
+BIOS BIN FIle : ComHpcAlt_tianocore_atf_2.04.100.02.bin
+Release Date  : 2022/05/02
+Release Time  : 23:56:47
+CheckSum      : 0xD0C89C94
+POST Message  : 2.04.100.02 Build 20220502
+Size          : 32MB
+===============================================================================
+1. Add POST code thru MMC and utilize Intel POST code map;
+   This feature support board A2 stepping so far, A1 board need MMC FW to update to support.
+# POST code: (https://github.com/ADLINK/edk2_aadp)
+* Progress Map 
+  * DXE_CORE_STARTED, 0x60 },
+  * DXE_SBRUN_INIT, 0x62 },
+  * DXE_NB_HB_INIT, 0x68 },
+  * DXE_NB_INIT, 0x69 },
+  * DXE_NB_SMM_INIT, 0x6A },
+  * DXE_SB_INIT, 0x70 },
+  * DXE_SB_SMM_INIT, 0x71 },
+  * DXE_SB_DEVICES_INIT, 0x72 },
+  * DXE_BDS_STARTED, 0x90 },
+  * DXE_PCI_BUS_BEGIN, 0x92 },
+  * DXE_PCI_BUS_HPC_INIT, 0x93 },
+  * DXE_PCI_BUS_ENUM, 0x94 },
+  * DXE_PCI_BUS_REQUEST_RESOURCES, 0x95 },
+  * DXE_PCI_BUS_ASSIGN_RESOURCES, 0x96 },
+  * DXE_CON_OUT_CONNECT, 0x97 },
+  * DXE_CON_IN_CONNECT, 0x98 },
+  * DXE_SIO_INIT, 0x99 },
+  * DXE_USB_BEGIN, 0x9A },
+  * DXE_USB_RESET, 0x9B },
+  * DXE_USB_DETECT, 0x9C },
+  * DXE_USB_ENABLE, 0x9D },
+  * DXE_IDE_BEGIN, 0xA1 },
+  * DXE_IDE_RESET, 0xA2 },
+  * DXE_IDE_DETECT, 0xA3 },
+  * DXE_IDE_ENABLE, 0xA4 },
+  * DXE_SCSI_BEGIN, 0xA5 },
+  * DXE_SCSI_RESET, 0xA6 },
+  * DXE_SCSI_DETECT, 0xA7 },
+  * DXE_SCSI_ENABLE, 0xA8 },
+  * DXE_SETUP_START, 0xAB },
+  * DXE_SETUP_INPUT_WAIT, 0xAC },
+  * DXE_READY_TO_BOOT, 0xAD },
+  * DXE_LEGACY_BOOT, 0xAE },
+  * DXE_EXIT_BOOT_SERVICES, 0xAF },
+  * RT_SET_VIRTUAL_ADDRESS_MAP_BEGIN, 0xB0 },
+  * RT_SET_VIRTUAL_ADDRESS_MAP_END, 0xB1 },
+  * DXE_LEGACY_OPROM_INIT, 0xB2 },
+  * DXE_RESET_SYSTEM, 0xB3 },
+  * DXE_USB_HOTPLUG, 0xB4 },
+  * DXE_PCI_BUS_HOTPLUG, 0xB5 },
+
+* Error Map
+  * DXE_CPU_SELF_TEST_FAILED, 0x58 },
+  * DXE_NB_ERROR, 0xD1 },
+  * DXE_SB_ERROR, 0xD2 },
+  * DXE_ARCH_PROTOCOL_NOT_AVAILABLE, 0xD3 },
+  * DXE_PCI_BUS_OUT_OF_RESOURCES, 0xD4 },
+  * DXE_LEGACY_OPROM_NO_SPACE, 0xD5 },
+  * DXE_NO_CON_OUT, 0xD6 },
+  * DXE_NO_CON_IN, 0xD7 },
+  * DXE_INVALID_PASSWORD, 0xD8 },
+  * DXE_BOOT_OPTION_LOAD_ERROR, 0xD9 },
+  * DXE_BOOT_OPTION_FAILED, 0xDA },
+  * DXE_FLASH_UPDATE_FAILED, 0xDB },
+  * DXE_RESET_NOT_AVAILABLE, 0xDC },
+===============================================================================
+BIOS BIN FIle : ComHpcAlt_tianocore_atf_2.04.100.01.bin
+Release Date  : 2022/05/02
+Release Time  : 17:45:02
+CheckSum      : 0xD0C77E0C
+POST Message  : 2.04.100.01 Build 20220502
+Size          : 32MB
+===============================================================================
+1. Update edk2-platforms to fix A1 board booting failed issue.
+2. Upgrade edk2-platforms to fix boot failure after CPU swapping between Altra/AltraMax families.
+3. Add Capsule update backward compatibility.
+===============================================================================
