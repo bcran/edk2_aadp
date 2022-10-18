@@ -17,7 +17,7 @@ cd ..
 if [ -f "$zfname.tar.gz" ]; then
     rm "$zfname.tar.gz"
 fi    
-tar -zcvpf "$zfname.tar.gz" --exclude={"Build","BUILDS",".git","edk2-ampere-tools/toolchain"} $basedir
+tar -zcvpf "$zfname.tar.gz" --exclude={"Build","BUILDS",".git"} $basedir
 # tar -zcvpf "$zfname.tar.gz" --exclude={"Build","BUILDS","edk2-ampere-tools/toolchain"} $basedir
 
 cd $basedir
