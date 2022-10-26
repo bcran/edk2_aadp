@@ -35,7 +35,7 @@ echo "==========================================================================
 echo "install tools" 
 echo "==========================================================================="
 if [[ $INSTALLER == "apt" || $INSTALLER == "apt-get" ]]; then
-  sudo $INSTALLER install -y libssl-dev build-essential lzma uuid-dev
+  sudo $INSTALLER install -y libssl-dev build-essential lzma uuid-dev gnu-efi
 else
   sudo $INSTALLER install -y openssl-devel libuuid-devel
   wget http://mirror.centos.org/centos/8/PowerTools/x86_64/os/Packages/xz-lzma-compat-5.2.4-3.el8.x86_64.rpm
