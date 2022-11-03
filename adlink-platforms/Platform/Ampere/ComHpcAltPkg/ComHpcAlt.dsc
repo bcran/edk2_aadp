@@ -54,10 +54,20 @@
   DEFINE INCLUDE_TFTP_COMMAND    = TRUE
   DEFINE PLATFORM_CONFIG_UUID    = 2E02C0B8-2EF9-4E0F-93B7-ACC138452995
   #
+  # DEVEL_MODE will disable PXE/HTTP boot
+  #
+!ifndef $(DEVEL_MODE)
+  DEFINE DEVEL_MODE          = FALSE
+!endif  
+  #
   # Network definition
   #
   DEFINE NETWORK_IP6_ENABLE                  = TRUE
+!if $(DEVEL_MODE)
+  DEFINE NETWORK_HTTP_BOOT_ENABLE            = FALSE
+!else  
   DEFINE NETWORK_HTTP_BOOT_ENABLE            = TRUE
+!endif  
   DEFINE NETWORK_ALLOW_HTTP_CONNECTIONS      = TRUE
   DEFINE NETWORK_TLS_ENABLE                  = TRUE
   DEFINE REDFISH_ENABLE                      = FALSE
@@ -205,6 +215,19 @@
   gAmpereTokenSpaceGuid.PcdPcieHotPlugPortMapTable.PortMap[34]|{ 34, 1, 7, 4, 1, 0x24, 0x70, 0x4, 0, 11, 9 }   # S1 RCB3.4 - SSD9
   gAmpereTokenSpaceGuid.PcdPcieHotPlugPortMapTable.PortMap[35]|{ 35, 1, 7, 6, 0, 0x24, 0x70, 0x4, 0, 11, 8 }   # S1 RCB3.6 - SSD8
   gAmpereTokenSpaceGuid.PcdPcieHotPlugPortMapTable.PortMap[36]|{ 0xFF, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0xFF }       # Require if no fully structure used
+
+!if $(DEVEL_MODE)
+# [PcdsFixedAtBuild, PcdsPatchableInModule, PcdsDynamic, PcdsDynamicEx]
+  ## IPv4 PXE support
+  # 0x01 = PXE Enabled
+  # 0x00 = PXE Disabled
+  gEfiNetworkPkgTokenSpaceGuid.PcdIPv4PXESupport|0x00
+
+  ## IPv6 PXE support
+  # 0x01 = PXE Enabled
+  # 0x00 = PXE Disabled
+  gEfiNetworkPkgTokenSpaceGuid.PcdIPv6PXESupport|0x00
+!endif
 
 [PcdsFixedAtBuild.common]
   #
