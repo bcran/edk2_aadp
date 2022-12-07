@@ -40,7 +40,8 @@
   UefiDriverEntryPoint
   UefiLib
   GpioLib
-
+  FlashLib
+  
 [Protocols]
   gEfiSmbiosProtocolGuid                     ## CONSUMED
   gIpmiProtocolGuid

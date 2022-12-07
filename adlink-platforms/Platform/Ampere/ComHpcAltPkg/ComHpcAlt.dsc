@@ -220,6 +220,10 @@
   Platform/Ampere/ComHpcAltPkg/AcpiTables/AcpiTables.inf
   Platform/Ampere/JadePkg/Ac02AcpiTables/Ac02AcpiTables.inf
 
+
+  #DMIEdit
+  Platform/Ampere/ComHpcAltPkg/ATFMMCall/ATFMMCall.inf
+
   #
   # PCIe
   #

@@ -23,7 +23,9 @@
 #include <Protocol/IpmiProtocol.h>
 #include <Protocol/Smbios.h>
 #include <Library/GpioLib.h>
+#include <Library/FlashLib.h>
 
+#define MAX_SMBIOS_STRING_LEN 250
 #define MB_ID_GPI6 30
 #define MB_ID_GPI7 31
 
@@ -178,7 +180,7 @@ typedef struct {
 
 typedef struct {
   SMBIOS_TABLE_TYPE11 Base;
-  CHAR8               Strings[sizeof (TYPE11_ADDITIONAL_STRINGS)];
+  CHAR8               Strings[];
 } ARM_TYPE11;
 
 typedef struct {
@@ -651,17 +653,7 @@ STATIC ARM_TYPE9 mArmDefaultType9Sk1NvmeM2Slot2 = {
 };
 
 // Type 11 OEM Strings
-STATIC ARM_TYPE11 mArmDefaultType11 = {
-  {
-    {                               // SMBIOS_STRUCTURE Hdr
-      EFI_SMBIOS_TYPE_OEM_STRINGS,  // UINT8 Type
-      sizeof (SMBIOS_TABLE_TYPE11), // UINT8 Length
-      SMBIOS_HANDLE_PI_RESERVED,
-    },
-    ADDITIONAL_STR_INDEX_1
-  },
-  TYPE11_ADDITIONAL_STRINGS
-};
+ARM_TYPE11 mArmDefaultType11;
 
 // Type 13 BIOS Language Information
 STATIC ARM_TYPE13 mArmDefaultType13 = {
@@ -1405,6 +1397,37 @@ UpdateSmbiosInfo (
 
 }
 
+STATIC struct
+{
+  CHAR16 *Name;
+  CHAR16 *FName;
+  EFI_STATUS (*Func) (UINTN *Base, UINT32 *Size);
+}
+BaseInfo[] =
+{
+  { L"FailSafe", L"FlashGetFailSafeInfo", FlashGetFailSafeInfo},
+  { L"NvRam2",   L"FlashGetNvRam2Info",   FlashGetNvRam2Info},
+  { L"NvRam",    L"FlashGetNvRamInfo",    FlashGetNvRamInfo},
+  { NULL }
+};
+
+STATIC EFI_STATUS Flash_GetInfo (CHAR16 *Str, UINTN *Base, UINT32 *Size, int *Index)
+{
+  CHAR16 *Name;
+
+  for (UINTN i = 0; (Name = BaseInfo[i].Name) != NULL; i++) {
+
+    if (StrnCmp (Str, Name, StrLen (Name)) == 0) {
+      *Index = i;
+      EFI_STATUS Status = BaseInfo[i].Func (Base, Size);
+      if (EFI_ERROR (Status)) *Base = -1; // call error
+      return Status;
+    }
+  }
+
+  *Base = 0; // normal error
+  return EFI_INVALID_PARAMETER;
+}
 /**
    Install all structures from the DefaultTables structure
 
@@ -1416,6 +1439,11 @@ InstallAllStructures (
   IN EFI_SMBIOS_PROTOCOL *Smbios
   )
 {
+  UINTN Base;
+  UINT32 Size, Len;
+  int index = 0;
+  UINT8 *Buf = NULL;
+  
   EFI_STATUS Status = EFI_SUCCESS;
 
   ASSERT (Smbios != NULL);
@@ -1432,6 +1460,35 @@ InstallAllStructures (
   // Install Type 3 table
   InstallType3Structure (Smbios);
 
+   
+   mArmDefaultType11.Base.Hdr.Type = EFI_SMBIOS_TYPE_OEM_STRINGS;
+   mArmDefaultType11.Base.Hdr.Length =   sizeof (SMBIOS_TABLE_TYPE11);
+   mArmDefaultType11.Base.Hdr.Handle =   SMBIOS_HANDLE_PI_RESERVED;
+
+   mArmDefaultType11.Base.StringCount = 1;
+
+  //Get Flash Info
+  Status = Flash_GetInfo (L"NvRam2", &Base, &Size, &index);
+  Len = StrLen (BaseInfo[index].Name);
+  Buf = AllocateZeroPool (MAX_SMBIOS_STRING_LEN);
+  if (Buf == NULL) {
+      return EFI_OUT_OF_RESOURCES;
+  }
+  Status = FlashReadCommand (Base, Buf, MAX_SMBIOS_STRING_LEN);
+  
+  if (Buf[index] != 0xFF)
+  {
+    for(index = 0; Buf[index*2] != 0xFF; index++)
+	{
+	  mArmDefaultType11.Strings[index] = Buf [index*2];
+	}
+    mArmDefaultType11.Strings[index] = '\0'; 
+  }
+  else
+  {
+    CHAR8 DefaultType11[sizeof(TYPE11_ADDITIONAL_STRINGS)] = TYPE11_ADDITIONAL_STRINGS;
+    CopyMem (mArmDefaultType11.Strings, (CHAR16*)DefaultType11, sizeof (DefaultType11)+1);
+  }
   // Install Tables
   Status = InstallStructures (Smbios, DefaultCommonTables);
   ASSERT_EFI_ERROR (Status);
