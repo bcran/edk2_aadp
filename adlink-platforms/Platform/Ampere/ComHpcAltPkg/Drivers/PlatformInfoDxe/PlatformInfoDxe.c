@@ -136,6 +136,13 @@ GetLanFwVer (
   //
   TmpLen = 4;
   Status = I2cRead (PcdGet8(PcdNicI2cBusAddress), PcdGet8(PcdNicI2cDeviceAddress), NULL, 0, (UINT8 *)Ver, &TmpLen);
+  if(EFI_ERROR (Status)){
+  TmpLen = 1;
+  Status = I2cWrite (PcdGet8(PcdNicI2cBusAddress), 0x30, I2cCommand, &TmpLen);
+  TmpLen = 4;
+  Status = I2cRead (PcdGet8(PcdNicI2cBusAddress), 0x30, NULL, 0, (UINT8 *)Ver, &TmpLen);
+  }
+
   if (EFI_ERROR (Status)) {
     return EFI_DEVICE_ERROR;
   }
