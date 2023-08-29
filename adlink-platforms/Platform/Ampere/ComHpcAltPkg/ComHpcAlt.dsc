@@ -297,3 +297,8 @@
   Platform/Ampere/AmperePlatformPkg/Drivers/PlatformBootManagerDxe/PlatformBootManagerDxe.inf
 
   #
+  # X86EmulatorPkg support
+  #
+  Platform/Ampere/ComHpcAltPkg/X86EmulatorPkg/X86Emulator.inf
+
+  #

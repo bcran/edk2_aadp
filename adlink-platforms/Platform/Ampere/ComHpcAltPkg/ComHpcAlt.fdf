@@ -438,6 +438,11 @@ APRIORI DXE {
 !endif
 
   #
+  #X86EmulatorPkg support
+  #
+  INF Platform/Ampere/ComHpcAltPkg/X86EmulatorPkg/X86Emulator.inf
+  
+  #
   # Platform Boot Manager
   #
   INF Platform/Ampere/AmperePlatformPkg/Drivers/PlatformBootManagerDxe/PlatformBootManagerDxe.inf
