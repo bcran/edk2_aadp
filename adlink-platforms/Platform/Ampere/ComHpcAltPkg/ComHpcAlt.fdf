@@ -437,10 +437,6 @@ APRIORI DXE {
   INF Platform/Ampere/JadePkg/Drivers/SmbiosType42Dxe/SmbiosType42Dxe.inf
 !endif
 
-  #
-  #X86EmulatorPkg support
-  #
-  INF Platform/Ampere/ComHpcAltPkg/X86EmulatorPkg/X86Emulator.inf
   
   #
   # Platform Boot Manager
