@@ -1620,6 +1620,8 @@ IpmiInstalledCallback (
   IN VOID      *Context
   )
 {
+//Commented as IPMI FRU Get Data is not implemented
+#if 0
   EFI_STATUS          Status;
   IPMI_PROTOCOL       *IpmiProtocol;
   EFI_SMBIOS_PROTOCOL *Smbios;
@@ -1655,10 +1657,12 @@ IpmiInstalledCallback (
   // Update SMBIOS Type 1, 2 and 3 based on FRU data that were read from BMC.
   //
   UpdateSmbiosType123 (Smbios);
-
+#endif
   if (Event != NULL) {
     gBS->CloseEvent (Event);
   }
+ 
+  return;
 }
 
 /**

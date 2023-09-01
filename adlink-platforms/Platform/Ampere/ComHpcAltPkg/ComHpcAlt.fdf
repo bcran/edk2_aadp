@@ -343,7 +343,7 @@ APRIORI DXE {
   #
   # IPMI
   #
-  #INF Silicon/Ampere/AmpereSiliconPkg/Drivers/IpmiSsifDxe/IpmiSsifDxe.inf
+  INF Silicon/Ampere/AmpereSiliconPkg/Drivers/IpmiSsifDxe/IpmiSsifDxe.inf
 
   #
   # UEFI application (Shell Embedded Boot Loader)
@@ -418,7 +418,7 @@ APRIORI DXE {
   INF Silicon/Ampere/AmpereAltraPkg/Drivers/RasConfigDxe/RasConfigDxe.inf
   INF Silicon/Ampere/AmpereAltraPkg/Drivers/WatchdogConfigDxe/WatchdogConfigDxe.inf
   INF Silicon/Ampere/AmpereAltraPkg/Drivers/PcieDeviceConfigDxe/PcieDeviceConfigDxe.inf
-  #INF Silicon/Ampere/AmpereSiliconPkg/Drivers/BmcInfoScreenDxe/BmcInfoScreenDxe.inf
+  INF Silicon/Ampere/AmpereSiliconPkg/Drivers/BmcInfoScreenDxe/BmcInfoScreenDxe.inf
   INF Silicon/Ampere/AmpereAltraPkg/Drivers/RootComplexConfigDxe/RootComplexConfigDxe.inf
 
   #
@@ -437,7 +437,6 @@ APRIORI DXE {
   INF Platform/Ampere/JadePkg/Drivers/SmbiosType42Dxe/SmbiosType42Dxe.inf
 !endif
 
-  
   #
   # Platform Boot Manager
   #
