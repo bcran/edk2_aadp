@@ -47,8 +47,8 @@
 [Pcd]
   # Type 0
   gAmpereTokenSpaceGuid.PcdSmbiosTables0BiosReleaseDate
-  gAmpereTokenSpaceGuid.PcdSmbiosTables1MajorVersion
-  gAmpereTokenSpaceGuid.PcdSmbiosTables1MinorVersion
+  gAmpereTokenSpaceGuid.PcdSmbiosTables0MajorVersion
+  gAmpereTokenSpaceGuid.PcdSmbiosTables0MinorVersion
   gEfiMdeModulePkgTokenSpaceGuid.PcdFirmwareVersionString
 
   gArmTokenSpaceGuid.PcdFdSize

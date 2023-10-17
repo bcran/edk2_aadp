@@ -27,7 +27,7 @@
   # -D FLAG=VALUE
   #
   DEFINE DEBUG_PRINT_ERROR_LEVEL = 0x8000000F
-  DEFINE FIRMWARE_VER            = 2.08.100
+  DEFINE FIRMWARE_VER            = 2.09.100
   DEFINE EDK2_SKIP_PEICORE       = TRUE
 
 !include MdePkg/MdeLibs.dsc.inc

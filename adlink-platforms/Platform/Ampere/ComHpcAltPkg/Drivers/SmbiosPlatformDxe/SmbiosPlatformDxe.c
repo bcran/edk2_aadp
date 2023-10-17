@@ -787,7 +787,7 @@ GetBiosVerMajor (
   VOID
   )
 {
-  return (PcdGet8 (PcdSmbiosTables1MajorVersion));
+  return (PcdGet8 (PcdSmbiosTables0MajorVersion));
 }
 
 STATIC
@@ -796,7 +796,7 @@ GetBiosVerMinor (
   VOID
   )
 {
-  return (PcdGet8 (PcdSmbiosTables1MinorVersion));
+  return (PcdGet8 (PcdSmbiosTables0MinorVersion));
 }
 
 STATIC
