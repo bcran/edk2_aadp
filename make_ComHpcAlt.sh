@@ -10,7 +10,7 @@ DEVEL_MODE=0
 #
 # Firmware Version
 #
-# VER=2.08
+  VER=2.09
 # BUILD=100.00
 # DEBUG=0
 
