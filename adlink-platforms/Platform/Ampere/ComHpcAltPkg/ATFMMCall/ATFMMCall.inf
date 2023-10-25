@@ -1,0 +1,45 @@
+##
+#
+#  Copyright (c) 2018, Ampere Computing LLC
+#
+#  This program and the accompanying materials
+#  are licensed and made available under the terms and conditions of the BSD License
+#  which accompanies this distribution.  The full text of the license may be found at
+#  http://opensource.org/licenses/bsd-license.php
+#
+#  THE PROGRAM IS DISTRIBUTED UNDER THE BSD LICENSE ON AN "AS IS" BASIS,
+#  WITHOUT WARRANTIES OR REPRESENTATIONS OF ANY KIND, EITHER EXPRESS OR IMPLIED.
+#
+##
+
+[Defines]
+  INF_VERSION                    = 0x00010005
+  BASE_NAME                      = ATFMMCall
+  FILE_GUID                      = 0a3cc3ee-4119-4235-9cdd-d56ee28b02bc
+  MODULE_TYPE                    = UEFI_APPLICATION
+  VERSION_STRING                 = 1.0
+  ENTRY_POINT                    = AppEntryPoint
+
+[Sources]
+  ATFMMCall.c
+
+[Packages]
+  MdePkg/MdePkg.dec
+  ArmPkg/ArmPkg.dec
+  ArmPlatformPkg/ArmPlatformPkg.dec
+  Platform/Ampere/AmperePlatformPkg/AmperePlatformPkg.dec
+  Silicon/Ampere/AmpereAltraPkg/AmpereAltraPkg.dec
+  ShellPkg/ShellPkg.dec
+  EmbeddedPkg/EmbeddedPkg.dec
+
+[Protocols]
+  gEfiShellParametersProtocolGuid
+
+[LibraryClasses]
+  BaseLib
+  UefiApplicationEntryPoint
+  ShellLib
+  PrintLib
+# PlatformFlashAccessLib
+  FlashLib
+
