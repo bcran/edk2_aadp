@@ -39,7 +39,10 @@
   UefiDriverEntryPoint
   UefiLib
   GpioLib
-
+#//><ADLINK-MS20232510>//
+  FlashLib
+#//><ADLINK-MS20232510>//
+  
 [Protocols]
   gEfiSmbiosProtocolGuid                     ## CONSUMED
   gIpmiProtocolGuid

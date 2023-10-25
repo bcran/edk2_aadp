@@ -22,7 +22,11 @@
 #include <Protocol/IpmiProtocol.h>
 #include <Protocol/Smbios.h>
 #include <Library/GpioLib.h>
+//><ADLINK-MS20232510>//
+#include <Library/FlashLib.h>
 
+#define MAX_SMBIOS_STRING_LEN 250
+//><ADLINK-MS20232510>//
 #define MB_ID_GPI6 30
 #define MB_ID_GPI7 31
 
@@ -38,7 +42,9 @@
 
 // Type1 Data
 #define MANUFACTURER_TEMPLATE "ADLINK\0"
-#define PRODUCT_NAME_TEMPLATE "AVA Developer Platform\0"
+//><ADLINK-MS20232510>//
+#define PRODUCT_NAME_TEMPLATE "Ampere Altra Developer Platform\0"
+//><ADLINK-MS20232510>//
 #define SYS_VERSION_TEMPLATE  "PR010\0"
 #define SERIAL_TEMPLATE       "123456789ABCDEFF123456789ABCDEFF\0"
 #define SKU_TEMPLATE          "FEDCBA9876543211FEDCBA9876543211\0"
@@ -142,7 +148,9 @@ typedef struct {
 
 typedef struct {
   SMBIOS_TABLE_TYPE11 Base;
-  CHAR8               Strings[sizeof (TYPE11_ADDITIONAL_STRINGS)];
+//><ADLINK-MS20232510>//
+  CHAR8               Strings[];
+//><ADLINK-MS20232510>//
 } ARM_TYPE11;
 
 typedef struct {
@@ -563,18 +571,10 @@ STATIC ARM_TYPE9 mArmDefaultType9Sk1NvmeM2Slot2 = {
   "S1 NVMe M2_1\0"
 };
 
+//><ADLINK-MS20232510>//
 // Type 11 OEM Strings
-STATIC ARM_TYPE11 mArmDefaultType11 = {
-  {
-    {                               // SMBIOS_STRUCTURE Hdr
-      EFI_SMBIOS_TYPE_OEM_STRINGS,  // UINT8 Type
-      sizeof (SMBIOS_TABLE_TYPE11), // UINT8 Length
-      SMBIOS_HANDLE_PI_RESERVED,
-    },
-    ADDITIONAL_STR_INDEX_1
-  },
-  TYPE11_ADDITIONAL_STRINGS
-};
+ARM_TYPE11 mArmDefaultType11;
+//><ADLINK-MS20232510>//
 
 // Type 13 BIOS Language Information
 STATIC ARM_TYPE13 mArmDefaultType13 = {
@@ -1203,6 +1203,40 @@ UpdateSmbiosInfo (
 
 }
 
+//><ADLINK-MS20232510>//
+STATIC struct
+{
+  CHAR16 *Name;
+  CHAR16 *FName;
+  EFI_STATUS (*Func) (UINTN *Base, UINT32 *Size);
+}
+BaseInfo[] =
+{
+  { L"FailSafe", L"FlashGetFailSafeInfo", FlashGetFailSafeInfo},
+  { L"NvRam2",   L"FlashGetNvRam2Info",   FlashGetNvRam2Info},
+//  { L"NvRam",    L"FlashGetNvRamInfo",    FlashGetNvRamInfo},
+  { NULL }
+};
+
+STATIC EFI_STATUS Flash_GetInfo (CHAR16 *Str, UINTN *Base, UINT32 *Size, int *Index)
+{
+  CHAR16 *Name;
+
+  for (UINTN i = 0; (Name = BaseInfo[i].Name) != NULL; i++) {
+
+    if (StrnCmp (Str, Name, StrLen (Name)) == 0) {
+      *Index = i;
+      EFI_STATUS Status = BaseInfo[i].Func (Base, Size);
+      if (EFI_ERROR (Status)) *Base = -1; // call error
+      return Status;
+    }
+  }
+
+  *Base = 0; // normal error
+  return EFI_INVALID_PARAMETER;
+}
+//><ADLINK-MS20232510>//
+
 /**
    Install all structures from the DefaultTables structure
 
@@ -1214,6 +1248,13 @@ InstallAllStructures (
   IN EFI_SMBIOS_PROTOCOL *Smbios
   )
 {
+//><ADLINK-MS20232510>//
+  UINTN Base;
+  UINT32 Size, Len;
+  int index = 0;
+  UINT8 *Buf = NULL;
+//><ADLINK-MS20232510>//
+  
   EFI_STATUS Status = EFI_SUCCESS;
 
   ASSERT (Smbios != NULL);
@@ -1229,6 +1270,37 @@ InstallAllStructures (
 
   // Install Type 3 table
   InstallType3Structure (Smbios);
+
+//><ADLINK-MS20232510>//   
+  mArmDefaultType11.Base.Hdr.Type = EFI_SMBIOS_TYPE_OEM_STRINGS;
+  mArmDefaultType11.Base.Hdr.Length =   sizeof (SMBIOS_TABLE_TYPE11);
+  mArmDefaultType11.Base.Hdr.Handle =   SMBIOS_HANDLE_PI_RESERVED;
+
+  mArmDefaultType11.Base.StringCount = 1;
+
+  //Get Flash Info
+  Status = Flash_GetInfo (L"NvRam2", &Base, &Size, &index);
+  Len = StrLen (BaseInfo[index].Name);
+  Buf = AllocateZeroPool (MAX_SMBIOS_STRING_LEN);
+  if (Buf == NULL) {
+    return EFI_OUT_OF_RESOURCES;
+  }
+  Status = FlashReadCommand (Base, Buf, MAX_SMBIOS_STRING_LEN);
+  
+  if (Buf[index] != 0xFF)
+  {
+    for(index = 0; Buf[index*2] != 0xFF; index++)
+    {
+      mArmDefaultType11.Strings[index] = Buf [index*2];
+    }
+    mArmDefaultType11.Strings[index] = '\0'; 
+  }
+  else
+  {
+    CHAR8 DefaultType11[sizeof(TYPE11_ADDITIONAL_STRINGS)] = TYPE11_ADDITIONAL_STRINGS;
+    CopyMem (mArmDefaultType11.Strings, (CHAR16*)DefaultType11, sizeof (DefaultType11)+1);
+  }
+//><ADLINK-MS20232510>//
 
   // Install Tables
   Status = InstallStructures (Smbios, DefaultCommonTables);
@@ -1361,6 +1433,10 @@ IpmiInstalledCallback (
   IN VOID      *Context
   )
 {
+//><ADLINK-MS20232510>//
+//Commented as IPMI FRU Get Data is not implemented
+#if 0
+//><ADLINK-MS20232510>//
   EFI_STATUS          Status;
   IPMI_PROTOCOL       *IpmiProtocol;
   EFI_SMBIOS_PROTOCOL *Smbios;
@@ -1396,10 +1472,15 @@ IpmiInstalledCallback (
   // Update SMBIOS Type 1, 2 and 3 based on FRU data that were read from BMC.
   //
   UpdateSmbiosType123 (Smbios);
-
+//><ADLINK-MS20232510>//
+#endif
+//><ADLINK-MS20232510>//
   if (Event != NULL) {
     gBS->CloseEvent (Event);
   }
+//><ADLINK-MS20232510>// 
+  return;
+//><ADLINK-MS20232510>//  
 }
 
 /**

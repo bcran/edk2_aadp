@@ -12,8 +12,9 @@
 #string STR_PLATFORM_INFO_SEPERATE_LINE             #language en-US ""
 
 #string STR_PLATFORM_INFO_BOARD                     #language en-US "Board"
-#string STR_PLATFORM_INFO_BOARD_VALUE               #language en-US "AVA Developer Platform"
-
+//><ADLINK-MS20232510>//
+#string STR_PLATFORM_INFO_BOARD_VALUE               #language en-US "Ampere Altra Developer Platform"
+//><ADLINK-MS20232510>//
 #string STR_PLATFORM_INFO_SCPVER                    #language en-US "SCP FW Version"
 #string STR_PLATFORM_INFO_SCPVER_VALUE              #language en-US "0"
 
