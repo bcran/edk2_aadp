@@ -7,3 +7,4 @@ initramfs.cpio
 .vscode/configurationCache.log
 .vscode/targets.log
 adlink-platforms/Platform/Ampere/ComHpcAltPkg/taglog.txt
+*.slim
