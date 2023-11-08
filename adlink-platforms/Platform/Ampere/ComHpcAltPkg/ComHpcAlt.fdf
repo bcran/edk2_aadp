@@ -420,6 +420,7 @@ APRIORI DXE {
   INF Silicon/Ampere/AmpereAltraPkg/Drivers/PcieDeviceConfigDxe/PcieDeviceConfigDxe.inf
   INF Silicon/Ampere/AmpereSiliconPkg/Drivers/BmcInfoScreenDxe/BmcInfoScreenDxe.inf
   INF Silicon/Ampere/AmpereAltraPkg/Drivers/RootComplexConfigDxe/RootComplexConfigDxe.inf
+  INF Platform/Ampere/ComHpcAltPkg/Drivers/HardwareMonitorDxe/HwMonitorDxe.inf
 
   #
   # Misc
