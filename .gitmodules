@@ -17,3 +17,9 @@
 [submodule "edk2_adlink-ampere-altra"]
 	path = edk2_adlink-ampere-altra
 	url = https://github.com/ADLINK/edk2_adlink-ampere-altra.git
+[submodule "MultiArchUefiPkg"]
+	path = MultiArchUefiPkg
+	url = https://github.com/intel/MultiArchUefiPkg.git
+[submodule "unicorn"]
+	path = unicorn
+	url = https://github.com/intel/unicorn-for-efi.git
