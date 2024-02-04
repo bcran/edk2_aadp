@@ -1,6 +1,3 @@
-[submodule "AmpereAltra-ATF-SCP"]
-	path = AmpereAltra-ATF-SCP
-	url = https://github.com/ADLINK/AmpereAltra-ATF-SCP.git
 [submodule "edk2-platforms"]
 	path = edk2-platforms
 	url = https://github.com/ADLINK/edk2-platforms.git
