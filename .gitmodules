@@ -1,6 +1,6 @@
 [submodule "edk2-platforms"]
 	path = edk2-platforms
-	url = https://github.com/ADLINK/edk2-platforms.git
+	url = https://github.com/bcran/edk2-platforms
 	branch = adlink-v2.04.100
 [submodule "OpenPlatformPkg"]
 	path = OpenPlatformPkg
