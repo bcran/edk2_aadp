@@ -26,5 +26,5 @@
   # Defines for default states.  These can be changed on the command line.
   # -D FLAG=VALUE
   #
-  DEFINE UEFI_ATF_IMAGE          = Build/ComHpcAlt/ComHpcAlt_tianocore_atf.img
+  DEFINE UEFI_TFA_IMAGE          = Build/ComHpcAlt/ComHpcAlt_tianocore_tfa.img
   DEFINE SCP_IMAGE               = Build/ComHpcAlt/ComHpcAlt_scp.slim

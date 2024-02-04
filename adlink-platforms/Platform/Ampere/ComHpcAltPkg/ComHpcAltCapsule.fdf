@@ -31,7 +31,7 @@ FILE = $(WORKSPACE)/$(OUTPUT_DIRECTORY)/$(TARGET)_$(TOOL_CHAIN_TAG)/FV/SYSTEMFIR
 0x00010000|0x00040000
 FILE = $(SCP_IMAGE)
 
-[FD.COMHPCALT_UEFI_ATF_FIRMWARE_CAPSULE]
+[FD.COMHPCALT_UEFI_TFA_FIRMWARE_CAPSULE]
 BaseAddress   = 0x00000000  # The base address of the Firmware in NOR Flash.
 Size          = 0x00D10000  # The size in bytes of the FLASH Device
 ErasePolarity = 1
@@ -40,7 +40,7 @@ ErasePolarity = 1
 FILE = $(WORKSPACE)/$(OUTPUT_DIRECTORY)/$(TARGET)_$(TOOL_CHAIN_TAG)/FV/SYSTEMFIRMWAREDESCRIPTOR.Fv
 
 0x00010000|0x00D00000
-FILE = $(UEFI_ATF_IMAGE)
+FILE = $(UEFI_TFA_IMAGE)
 
 ################################################################################
 #
@@ -119,7 +119,7 @@ READ_LOCK_CAP      = TRUE
 READ_LOCK_STATUS   = TRUE
 
 FILE RAW = 431C06ED-4FE2-438F-98A3-A9B1FD923019 { # PcdEdkiiSystemFirmwareFileGuid
-    FD = COMHPCALT_UEFI_ATF_FIRMWARE_CAPSULE
+    FD = COMHPCALT_UEFI_TFA_FIRMWARE_CAPSULE
   }
 
 FILE RAW = ce57b167-b0e4-41e8-a897-5f4feb781d40 { # gEdkiiSystemFmpCapsuleDriverFvFileGuid

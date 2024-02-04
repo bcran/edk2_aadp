@@ -298,3 +298,10 @@
   Platform/Ampere/AmperePlatformPkg/Drivers/PlatformBootManagerDxe/PlatformBootManagerDxe.inf
 
   #
+  # OpRom emulator
+  #
+!if $(TARGET) == RELEASE
+  MultiArchUefiPkg/Drivers/EmulatorBin/EmulatorBinRelease.inf
+!else
+  MultiArchUefiPkg/Drivers/EmulatorBin/EmulatorBinDebug.inf
+!endif

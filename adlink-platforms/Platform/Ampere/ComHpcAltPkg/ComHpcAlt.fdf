@@ -427,6 +427,15 @@ APRIORI DXE {
   #
   INF Silicon/Ampere/AmpereAltraPkg/Drivers/IpmiBootDxe/IpmiBootDxe.inf
 
+  #
+  # Emulator for x64 OpRoms, etc.
+  #
+!if $(TARGET) == RELEASE
+  INF MultiArchUefiPkg/Drivers/EmulatorBin/EmulatorBinRelease.inf
+!else
+  INF MultiArchUefiPkg/Drivers/EmulatorBin/EmulatorBinDebug.inf
+!endif
+
 !include AdlinkAmpereAltra.fdf.inc
 !include AdlinkComHpc.fdf.inc
 
