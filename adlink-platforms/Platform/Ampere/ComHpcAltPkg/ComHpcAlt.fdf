@@ -1,6 +1,6 @@
 ## @file
 #
-# Copyright (c) 2020 - 2021, Ampere Computing LLC. All rights reserved.<BR>
+# Copyright (c) 2020 - 2022, Ampere Computing LLC. All rights reserved.<BR>
 #
 # SPDX-License-Identifier: BSD-2-Clause-Patent
 #
@@ -170,6 +170,11 @@ APRIORI PEI {
 !endif
 
   #
+  # IPMI
+  #
+  INF Silicon/Ampere/AmpereSiliconPkg/Drivers/IpmiSsif/IpmiSsifPeim.inf
+
+  #
   # Print platform information before passing control into the Driver Execution Environment (DXE) phase
   #
   INF Silicon/Ampere/AmpereAltraPkg/Drivers/DebugInfoPei/DebugInfoPei.inf
@@ -265,9 +270,9 @@ APRIORI DXE {
   INF ArmPkg/Drivers/TimerDxe/TimerDxe.inf
 
   #
-  # FailSafe and Watchdog Timer
+  # Watchdog Timer
   #
-  INF Silicon/Ampere/AmpereAltraPkg/Drivers/FailSafeDxe/FailSafeDxe.inf
+  INF ArmPkg/Drivers/GenericWatchdogDxe/GenericWatchdogDxe.inf
 
   #
   # ARM GIC Dxe
@@ -321,9 +326,11 @@ APRIORI DXE {
   #
   # Network PCIe I210
   #
-  INF Platform/Ampere/AmperePlatformPkg/Drivers/GigUndiDxe/GigUndiDxe.inf
+  !if $(NETWORK_ENABLE) == TRUE
+    INF Platform/Ampere/AmperePlatformPkg/Drivers/GigUndiDxe/GigUndiDxe.inf
 
-  INF Platform/Ampere/AmperePlatformPkg/Drivers/UsbCdcEthernetDxe/UsbCdcEthernetDxe.inf
+    INF Platform/Ampere/AmperePlatformPkg/Drivers/UsbCdcEthernetDxe/UsbCdcEthernetDxe.inf
+  !endif
 
   #
   # VGA Aspeed
@@ -343,7 +350,7 @@ APRIORI DXE {
   #
   # IPMI
   #
-  INF Silicon/Ampere/AmpereSiliconPkg/Drivers/IpmiSsifDxe/IpmiSsifDxe.inf
+  INF Silicon/Ampere/AmpereSiliconPkg/Drivers/IpmiSsif/IpmiSsifDxe.inf
 
   #
   # UEFI application (Shell Embedded Boot Loader)
@@ -373,7 +380,9 @@ APRIORI DXE {
   #
   # Networking stack
   #
-!include NetworkPkg/Network.fdf.inc
+!if $(NETWORK_ENABLE) == TRUE
+  !include NetworkPkg/Network.fdf.inc
+!endif
 
   #
   # ACPI
@@ -388,9 +397,10 @@ APRIORI DXE {
   # SMBIOS
   #
   INF MdeModulePkg/Universal/SmbiosDxe/SmbiosDxe.inf
+  INF ArmPkg/Universal/Smbios/ProcessorSubClassDxe/ProcessorSubClassDxe.inf
+  INF ArmPkg/Universal/Smbios/SmbiosMiscDxe/SmbiosMiscDxe.inf
   INF Platform/Ampere/ComHpcAltPkg/Drivers/SmbiosPlatformDxe/SmbiosPlatformDxe.inf
-  INF Platform/Ampere/JadePkg/Drivers/SmbiosCpuDxe/SmbiosCpuDxe.inf
-  INF Platform/Ampere/JadePkg/Drivers/SmbiosMemInfoDxe/SmbiosMemInfoDxe.inf
+  INF Silicon/Ampere/AmpereSiliconPkg/Drivers/SmbiosBlobsTransferDxe/SmbiosBlobsTransferDxe.inf
 
   #
   # Firmware Capsule Update
@@ -409,6 +419,11 @@ APRIORI DXE {
   INF Silicon/Ampere/AmpereAltraPkg/Application/EnrollAmpereSecureKey/EaskDynamicCommand.inf
 
   #
+  # IPMI Utilities
+  #
+  INF Silicon/Ampere/AmpereSiliconPkg/Application/IpmiUtil/IpmiUtilDynamicCommand.inf
+
+  #
   # HII
   #
   INF Platform/Ampere/ComHpcAltPkg/Drivers/PlatformInfoDxe/PlatformInfoDxe.inf
@@ -420,7 +435,9 @@ APRIORI DXE {
   INF Silicon/Ampere/AmpereAltraPkg/Drivers/PcieDeviceConfigDxe/PcieDeviceConfigDxe.inf
   INF Silicon/Ampere/AmpereSiliconPkg/Drivers/BmcInfoScreenDxe/BmcInfoScreenDxe.inf
   INF Silicon/Ampere/AmpereAltraPkg/Drivers/RootComplexConfigDxe/RootComplexConfigDxe.inf
+!if $(HARDWARE_MONITOR_ENABLE) == TRUE
   INF Platform/Ampere/ComHpcAltPkg/Drivers/HardwareMonitorDxe/HwMonitorDxe.inf
+!endif
 
   #
   # Misc

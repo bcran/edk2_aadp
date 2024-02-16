@@ -6,6 +6,7 @@
 [Defines]
   INF_VERSION                    = 0x00010005
   BASE_NAME                      = NVLib
+  MODULE_UNI_FILE                = NVLib.uni
   FILE_GUID                      = 49941B82-967B-4C82-B996-D8AB60BCF3CF 
   MODULE_TYPE                    = BASE
   VERSION_STRING                 = 1.0

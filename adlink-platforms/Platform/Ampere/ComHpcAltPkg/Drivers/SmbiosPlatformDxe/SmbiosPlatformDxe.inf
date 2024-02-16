@@ -48,36 +48,11 @@
 
 [Pcd]
   # Type 0
-  gAmpereTokenSpaceGuid.PcdSmbiosTables0BiosReleaseDate
-  gAmpereTokenSpaceGuid.PcdSmbiosTables1MajorVersion
-  gAmpereTokenSpaceGuid.PcdSmbiosTables1MinorVersion
+  gEfiMdeModulePkgTokenSpaceGuid.PcdFirmwareReleaseDateString
+  gEfiMdeModulePkgTokenSpaceGuid.PcdSmbiosVersion
   gEfiMdeModulePkgTokenSpaceGuid.PcdFirmwareVersionString
 
   gArmTokenSpaceGuid.PcdFdSize
-
-  # FRU Chassis Information
-  gAmpereTokenSpaceGuid.PcdFruChassisPartNumber
-  gAmpereTokenSpaceGuid.PcdFruChassisSerialNumber
-  gAmpereTokenSpaceGuid.PcdFruChassisExtra
-
-  # FRU Board Information
-  gAmpereTokenSpaceGuid.PcdFruBoardManufacturerName
-  gAmpereTokenSpaceGuid.PcdFruBoardProductName
-  gAmpereTokenSpaceGuid.PcdFruBoardSerialNumber
-  gAmpereTokenSpaceGuid.PcdFruBoardPartNumber
-
-  # FRU Product Information
-  gAmpereTokenSpaceGuid.PcdFruProductManufacturerName
-  gAmpereTokenSpaceGuid.PcdFruProductName
-  gAmpereTokenSpaceGuid.PcdFruProductPartNumber
-  gAmpereTokenSpaceGuid.PcdFruProductVersion
-  gAmpereTokenSpaceGuid.PcdFruProductSerialNumber
-  gAmpereTokenSpaceGuid.PcdFruProductAssetTag
-  gAmpereTokenSpaceGuid.PcdFruProductFruFileId
-  gAmpereTokenSpaceGuid.PcdFruProductExtra
-
-  # FRU MultiRecord
-  gAmpereTokenSpaceGuid.PcdFruSystemUniqueID
 
 [Guids]
   gPlatformInfoHobGuid

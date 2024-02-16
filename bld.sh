@@ -26,10 +26,10 @@ rm -fv ${OUTPUT_BOARD_SETTINGS_BIN}.padded
 
 PATH=../arm-trusted-firmware/tools/cert_create:../arm-trusted-firmware/tools/fiptool:$PATH
 
-TOOLCHAIN=GCC5
+TOOLCHAIN=GCC
 BLDTYPE=DEBUG
 BUILD_THREADS=$(getconf _NPROCESSORS_ONLN)
-export GCC5_AARCH64_PREFIX=aarch64-linux-gnu-
+export GCC_AARCH64_PREFIX=aarch64-linux-gnu-
 export WORKSPACE=$PWD
 export PACKAGES_PATH=$PWD/adlink-platforms:$PWD/edk2-platforms:$PWD/edk2_adlink-ampere-altra:$PWD/OpenPlatformPkg:$PWD/edk2-platforms/Features/Intel/Debugging:$PWD/edk2-platforms/Features:$PWD/edk2-platforms/Features/Intel:$PWD/edk2:$PWD
 
@@ -38,9 +38,17 @@ export PACKAGES_PATH=$PWD/adlink-platforms:$PWD/edk2-platforms:$PWD/edk2_adlink-
 build -a AARCH64 -t ${TOOLCHAIN} -p MultiArchUefiPkg/Emulator.dsc -b ${BLDTYPE}
 
 build -a AARCH64 -t ${TOOLCHAIN} -b ${BLDTYPE} -n ${BUILD_THREADS} \
-        -D FIRMWARE_VER="${VER}-${BUILD} TF-A 2.10" \
-        -D MAJOR_VER=${MAJOR_VER} -D MINOR_VER=${MINOR_VER} -D SECURE_BOOT_ENABLE \
-	-p Platform/Ampere/${BOARD_NAME}Pkg/${BOARD_NAME}.dsc
+        -D FIRMWARE_VER="${VER}-${BUILD} TF-A 2.10"                \
+        -D MAJOR_VER=${MAJOR_VER} -D MINOR_VER=${MINOR_VER}        \
+        -D SECURE_BOOT_ENABLE=TRUE               \
+        -D HARDWARE_MONITOR_ENABLE=TRUE          \
+        -D NETWORK_ENABLE=TRUE                   \
+        -D INCLUDE_TFTP_COMMAND=TRUE             \
+        -D NETWORK_IP6_ENABLE=TRUE               \
+        -D NETWORK_ALLOW_HTTP_CONNECTIONS=TRUE   \
+        -D NETWORK_TLS_ENABLE=TRUE               \
+        -D REDFISH_ENABLE=TRUE                   \
+        -p Platform/Ampere/${BOARD_NAME}Pkg/${BOARD_NAME}.dsc
 
 OUTPUT_BASENAME=${OUTPUT_BIN_DIR}/${BOARD_NAME,,}_tianocore_tfa_${BLDTYPE,,}_${VER}-${BUILD}
 OUTPUT_RAW_IMAGE=${OUTPUT_BASENAME}.raw

@@ -30,9 +30,10 @@
 #define MB_ID_GPI7 31
 
 // Type0 Data
-#define VENDOR_TEMPLATE       "ADLINK\0"
-#define BIOS_VERSION_TEMPLATE "0123456789012345678901234567890123456789012345678901234567890123\0"
-#define RELEASE_DATE_TEMPLATE "MM/DD/YYYY\0"
+#define VENDOR_TEMPLATE        "ADLINK\0"
+#define BIOS_VERSION_TEMPLATE  "0123456789012345678901234567890123456789012345678901234567890123\0"
+#define RELEASE_DATE_TEMPLATE  "MM/DD/YYYY\0"
+#define RELEASE_DATE_TEMPLATE_L L"MM/DD/YYYY\0"
 
 #define TYPE0_ADDITIONAL_STRINGS                    \
   VENDOR_TEMPLATE       /* Vendor */         \
@@ -774,6 +775,12 @@ STATIC MonthStringDig MonthMatch[12] = {
   { "Dec", "12" }
 };
 
+EFI_STATUS
+EFIAPI
+IpmiFruGetSystemUuid (
+  OUT EFI_GUID *SystemUuid
+  );
+
 STATIC
 VOID
 MbIdRead (
@@ -812,11 +819,6 @@ UpdateCpuFamily (
   }
 }
 
-EFI_STATUS
-IpmiReadFruInfo (
-  VOID
-  );
-
 STATIC
 VOID
 ConstructBuildDate (
@@ -825,7 +827,7 @@ ConstructBuildDate (
 {
   UINTN i;
 
-  // GCC __DATE__ format is "Feb  2 1996"
+  // GCC __DATE__ format is "Feb  2 2024"
   // If the day of the month is less than 10, it is padded with a space on the left
   CHAR8 *BuildDate = __DATE__;
 
@@ -848,7 +850,7 @@ ConstructBuildDate (
   // Day
   CopyMem (&SmbiosDateStr[3], &BuildDate[4], 2);
   if (BuildDate[4] == ' ') {
-    // day is less then 10, SAPCE filed by compiler, SMBIOS requires 0
+    // day is less then 10, SPACE filled by compiler, SMBIOS requires 0
     SmbiosDateStr[3] = '0';
   }
 
@@ -864,7 +866,10 @@ GetBiosVerMajor (
   VOID
   )
 {
-  return (PcdGet8 (PcdSmbiosTables1MajorVersion));
+  UINT16 SmbiosVersion;
+
+  SmbiosVersion = PcdGet16 (PcdSmbiosVersion);
+  return (SmbiosVersion >> 8);
 }
 
 STATIC
@@ -873,7 +878,10 @@ GetBiosVerMinor (
   VOID
   )
 {
-  return (PcdGet8 (PcdSmbiosTables1MinorVersion));
+  UINT16 SmbiosVersion;
+
+  SmbiosVersion = PcdGet16 (PcdSmbiosVersion);
+  return (SmbiosVersion & 0xf);
 }
 
 STATIC
@@ -964,7 +972,7 @@ UpdateSmbiosType0 (
   EFI_STATUS                          Status        = EFI_SUCCESS;
   MISC_BIOS_CHARACTERISTICS_EXTENSION *MiscExt      = NULL;
   CHAR8                               *ReleaseDateBuf = NULL;
-  CHAR8                               *PcdReleaseDate = NULL;
+  CHAR16                              *PcdReleaseDate = NULL;
   CHAR8                               AsciiVersion[32];
   UINTN                               Index;
   CHAR8                               BiosVersionStr[sizeof (BIOS_VERSION_TEMPLATE)];
@@ -979,14 +987,14 @@ UpdateSmbiosType0 (
   ReleaseDateBuf = &mArmDefaultType0.Strings[0]
                    + sizeof (VENDOR_TEMPLATE) - 1
                    + sizeof (BIOS_VERSION_TEMPLATE) - 1;
-  PcdReleaseDate = (CHAR8 *)PcdGetPtr (PcdSmbiosTables0BiosReleaseDate);
+  PcdReleaseDate = (CHAR16 *)PcdGetPtr (PcdFirmwareReleaseDateString);
 
-  if (AsciiStrnCmp (PcdReleaseDate, RELEASE_DATE_TEMPLATE, AsciiStrLen (RELEASE_DATE_TEMPLATE)) == 0) {
+  if (StrnCmp (PcdReleaseDate, RELEASE_DATE_TEMPLATE_L, StrLen (RELEASE_DATE_TEMPLATE_L)) == 0) {
     // If PCD is still template date MM/DD/YYYY, use compiler date
     ConstructBuildDate (ReleaseDateBuf);
   } else {
     // PCD is updated somehow, use PCD date
-    CopyMem (ReleaseDateBuf, PcdReleaseDate, AsciiStrLen (PcdReleaseDate));
+    AsciiSPrint (ReleaseDateBuf, StrLen (PcdReleaseDate), "%s", PcdReleaseDate);
   }
 
   if (PcdGet32 (PcdFdSize) < SIZE_16MB) {
@@ -1407,7 +1415,7 @@ BaseInfo[] =
 {
   { L"FailSafe", L"FlashGetFailSafeInfo", FlashGetFailSafeInfo},
   { L"NvRam2",   L"FlashGetNvRam2Info",   FlashGetNvRam2Info},
-  { L"NvRam",    L"FlashGetNvRamInfo",    FlashGetNvRamInfo},
+  //{ L"NvRam",    L"FlashGetNvRamInfo",    FlashGetNvRamInfo},
   { NULL }
 };
 
@@ -1564,6 +1572,8 @@ UpdateSmbiosType123 (
   EFI_STATUS              Status;
   EFI_SMBIOS_HANDLE       SmbiosHandle;
   EFI_SMBIOS_TABLE_HEADER *Record;
+  EFI_GUID                SystemUuid;
+  CHAR8                   SystemUuidStr[GUID_STRING_LENGTH + 1];
   UINTN                   StringIndex;
   UINT8                   *GuidPtr;
 
@@ -1577,13 +1587,15 @@ UpdateSmbiosType123 (
     //
     if (Record->Type == SMBIOS_TYPE_SYSTEM_INFORMATION) {
       GuidPtr = (UINT8 *)&((SMBIOS_TABLE_TYPE1 *)Record)->Uuid;
-      ConvertIpmiGuidToSmbiosGuid (GuidPtr, (UINT8 *)PcdGetPtr (PcdFruSystemUniqueID));
+      IpmiFruGetSystemUuid (&SystemUuid);
+      AsciiSPrint (SystemUuidStr, sizeof (SystemUuidStr), "%g", SystemUuid);
+      ConvertIpmiGuidToSmbiosGuid (GuidPtr, (UINT8 *)SystemUuidStr);
       StringIndex = ((SMBIOS_TABLE_TYPE1 *)Record)->Manufacturer;
-      SmbiosUpdateString (Smbios, SmbiosHandle, StringIndex++, (CHAR8 *)PcdGetPtr (PcdFruProductManufacturerName));
-      SmbiosUpdateString (Smbios, SmbiosHandle, StringIndex++, (CHAR8 *)PcdGetPtr (PcdFruProductName));
-      SmbiosUpdateString (Smbios, SmbiosHandle, StringIndex++, (CHAR8 *)PcdGetPtr (PcdFruProductVersion));
-      SmbiosUpdateString (Smbios, SmbiosHandle, StringIndex++, (CHAR8 *)PcdGetPtr (PcdFruProductSerialNumber));
-      SmbiosUpdateString (Smbios, SmbiosHandle, StringIndex++, (CHAR8 *)PcdGetPtr (PcdFruProductExtra));
+//      SmbiosUpdateString (Smbios, SmbiosHandle, StringIndex++, (CHAR8 *)PcdGetPtr (PcdFruProductManufacturerName));
+//      SmbiosUpdateString (Smbios, SmbiosHandle, StringIndex++, (CHAR8 *)PcdGetPtr (PcdFruProductName));
+//      SmbiosUpdateString (Smbios, SmbiosHandle, StringIndex++, (CHAR8 *)PcdGetPtr (PcdFruProductVersion));
+//      SmbiosUpdateString (Smbios, SmbiosHandle, StringIndex++, (CHAR8 *)PcdGetPtr (PcdFruProductSerialNumber));
+//      SmbiosUpdateString (Smbios, SmbiosHandle, StringIndex++, (CHAR8 *)PcdGetPtr (PcdFruProductExtra));
     }
 
     //
@@ -1591,10 +1603,10 @@ UpdateSmbiosType123 (
     //
     if (Record->Type == SMBIOS_TYPE_BASEBOARD_INFORMATION) {
       StringIndex = ((SMBIOS_TABLE_TYPE2 *)Record)->Manufacturer;
-      SmbiosUpdateString (Smbios, SmbiosHandle, StringIndex++, (CHAR8 *)PcdGetPtr (PcdFruBoardManufacturerName));
-      SmbiosUpdateString (Smbios, SmbiosHandle, StringIndex++, (CHAR8 *)PcdGetPtr (PcdFruBoardProductName));
-      SmbiosUpdateString (Smbios, SmbiosHandle, StringIndex++, (CHAR8 *)PcdGetPtr (PcdFruBoardPartNumber));
-      SmbiosUpdateString (Smbios, SmbiosHandle, StringIndex++, (CHAR8 *)PcdGetPtr (PcdFruBoardSerialNumber));
+//      SmbiosUpdateString (Smbios, SmbiosHandle, StringIndex++, (CHAR8 *)PcdGetPtr (PcdFruBoardManufacturerName));
+//      SmbiosUpdateString (Smbios, SmbiosHandle, StringIndex++, (CHAR8 *)PcdGetPtr (PcdFruBoardProductName));
+//      SmbiosUpdateString (Smbios, SmbiosHandle, StringIndex++, (CHAR8 *)PcdGetPtr (PcdFruBoardPartNumber));
+//      SmbiosUpdateString (Smbios, SmbiosHandle, StringIndex++, (CHAR8 *)PcdGetPtr (PcdFruBoardSerialNumber));
     }
 
     //
@@ -1602,11 +1614,11 @@ UpdateSmbiosType123 (
     //
     if (Record->Type == SMBIOS_TYPE_SYSTEM_ENCLOSURE) {
       StringIndex = ((SMBIOS_TABLE_TYPE3 *)Record)->Manufacturer;
-      SmbiosUpdateString (Smbios, SmbiosHandle, StringIndex++, (CHAR8 *)PcdGetPtr (PcdFruBoardManufacturerName));
-      SmbiosUpdateString (Smbios, SmbiosHandle, StringIndex++, (CHAR8 *)PcdGetPtr (PcdFruChassisPartNumber));
-      SmbiosUpdateString (Smbios, SmbiosHandle, StringIndex++, (CHAR8 *)PcdGetPtr (PcdFruChassisSerialNumber));
-      SmbiosUpdateString (Smbios, SmbiosHandle, StringIndex++, (CHAR8 *)PcdGetPtr (PcdFruProductAssetTag));
-      SmbiosUpdateString (Smbios, SmbiosHandle, StringIndex++, (CHAR8 *)PcdGetPtr (PcdFruChassisExtra));
+//      SmbiosUpdateString (Smbios, SmbiosHandle, StringIndex++, (CHAR8 *)PcdGetPtr (PcdFruBoardManufacturerName));
+//      SmbiosUpdateString (Smbios, SmbiosHandle, StringIndex++, (CHAR8 *)PcdGetPtr (PcdFruChassisPartNumber));
+//      SmbiosUpdateString (Smbios, SmbiosHandle, StringIndex++, (CHAR8 *)PcdGetPtr (PcdFruChassisSerialNumber));
+//      SmbiosUpdateString (Smbios, SmbiosHandle, StringIndex++, (CHAR8 *)PcdGetPtr (PcdFruProductAssetTag));
+//      SmbiosUpdateString (Smbios, SmbiosHandle, StringIndex++, (CHAR8 *)PcdGetPtr (PcdFruChassisExtra));
     }
 
     Status = Smbios->GetNext (Smbios, &SmbiosHandle, NULL, &Record, NULL);

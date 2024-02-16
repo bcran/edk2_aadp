@@ -49,18 +49,21 @@
   #  DEBUG_ERROR     0x80000000  // Error
   DEFINE DEBUG_PRINT_ERROR_LEVEL = 0x8000004F
   DEFINE FIRMWARE_VER            = 2.04.100.07
-  DEFINE SECURE_BOOT_ENABLE      = FALSE
+  DEFINE SECURE_BOOT_ENABLE      = TRUE
   DEFINE TPM2_ENABLE             = TRUE
   DEFINE INCLUDE_TFTP_COMMAND    = TRUE
   DEFINE PLATFORM_CONFIG_UUID    = 0690C53C-01B5-40AD-A65B-5399AC0B1E9B
   #
   # Network definition
   #
+  DEFINE NETWORK_ENABLE                      = TRUE
   DEFINE NETWORK_IP6_ENABLE                  = TRUE
   DEFINE NETWORK_HTTP_BOOT_ENABLE            = TRUE
   DEFINE NETWORK_ALLOW_HTTP_CONNECTIONS      = TRUE
   DEFINE NETWORK_TLS_ENABLE                  = TRUE
   DEFINE REDFISH_ENABLE                      = TRUE
+
+  DEFINE HARDWARE_MONITOR_ENABLE             = TRUE
 
   DEFINE DEFAULT_KEYS        = TRUE
   DEFINE PK_DEFAULT_FILE     = Platform/Ampere/JadePkg/TestKeys/PK.cer
@@ -111,11 +114,18 @@
   RedfishPlatformHostInterfaceLib|RedfishPkg/Library/PlatformHostInterfaceLibNull/PlatformHostInterfaceLibNull.inf
 !endif
 
+  IOExpanderLib|Platform/Ampere/JadePkg/Library/IOExpanderLib/IOExpanderLib.inf
+
+  PlatformBmcReadyLib|Platform/Ampere/JadePkg/Library/PlatformBmcReadyLib/PlatformBmcReadyLib.inf
+
+[LibraryClasses.common.PEIM]
+  SmbusLib|MdePkg/Library/PeiSmbusLibSmbus2Ppi/PeiSmbusLibSmbus2Ppi.inf
+
 [LibraryClasses.common.DXE_RUNTIME_DRIVER]
   CapsuleLib|MdeModulePkg/Library/DxeCapsuleLibFmp/DxeRuntimeCapsuleLib.inf
 
 [LibraryClasses.common.UEFI_DRIVER, LibraryClasses.common.UEFI_APPLICATION, LibraryClasses.common.DXE_RUNTIME_DRIVER, LibraryClasses.common.DXE_DRIVER]
-  SmbusLib|Platform/Ampere/JadePkg/Library/DxePlatformSmbusLib/DxePlatformSmbusLib.inf
+  SmbusLib|MdePkg/Library/DxeSmbusLib/DxeSmbusLib.inf
 
 ################################################################################
 #
@@ -133,16 +143,13 @@
   gEfiMdeModulePkgTokenSpaceGuid.PcdFirmwareVersionString|L"$(FIRMWARE_VER)"
 !endif
 
-  gAmpereTokenSpaceGuid.gPcieHotPlugGpioResetMap|0x3F
-
 [PcdsFixedAtBuild.common]
   #
   # Platform config UUID
   #
   gAmpereTokenSpaceGuid.PcdPlatformConfigUuid|"$(PLATFORM_CONFIG_UUID)"
 
-  gAmpereTokenSpaceGuid.PcdSmbiosTables1MajorVersion|$(MAJOR_VER)
-  gAmpereTokenSpaceGuid.PcdSmbiosTables1MinorVersion|$(MINOR_VER)
+  gEfiMdeModulePkgTokenSpaceGuid.PcdSmbiosVersion|0x300
 
   # Clearing BIT0 in this PCD prevents installing a 32-bit SMBIOS entry point,
   # if the entry point version is >= 3.0. AARCH64 OSes cannot assume the
@@ -180,10 +187,7 @@
 
 [PcdsDynamicDefault.common.DEFAULT]
   # SMBIOS Type 0 - BIOS Information
-  gAmpereTokenSpaceGuid.PcdSmbiosTables0BiosReleaseDate|"MM/DD/YYYY"
-
-  # SMBIOS Type 1 - UUID
-  gAmpereTokenSpaceGuid.PcdFruSystemUniqueID|{ 0x50, 0xFC, 0x29, 0x26, 0xCB, 0xB7, 0x11, 0xEB, 0xB8, 0xBC, 0x02, 0x42, 0xAC, 0x13, 0x00, 0x03 }
+  gEfiMdeModulePkgTokenSpaceGuid.PcdFirmwareReleaseDateString|L"MM/DD/YYYY"
 
 [PcdsDynamicExDefault.common.DEFAULT]
   gEfiSignedCapsulePkgTokenSpaceGuid.PcdEdkiiSystemFirmwareImageDescriptor|{0x0}|VOID*|0x100
@@ -204,11 +208,6 @@
 ################################################################################
 [Components.common]
   #
-  # FailSafe and Watchdog Timer
-  #
-  Silicon/Ampere/AmpereAltraPkg/Drivers/FailSafeDxe/FailSafeDxe.inf
-
-  #
   # ACPI
   #
   MdeModulePkg/Universal/Acpi/AcpiTableDxe/AcpiTableDxe.inf {
@@ -220,10 +219,6 @@
   Platform/Ampere/ComHpcAltPkg/AcpiTables/AcpiTables.inf
   Platform/Ampere/JadePkg/Ac02AcpiTables/Ac02AcpiTables.inf
 
-
-  #DMIEdit
-  Platform/Ampere/ComHpcAltPkg/ATFMMCall/ATFMMCall.inf
-
   #
   # PCIe
   #
@@ -232,9 +227,12 @@
   #
   # Network PCIe I210
   #
-  Platform/Ampere/AmperePlatformPkg/Drivers/GigUndiDxe/GigUndiDxe.inf
+  !if $(NETWORK_ENABLE) == TRUE
+    Platform/Ampere/AmperePlatformPkg/Drivers/GigUndiDxe/GigUndiDxe.inf
 
-  Platform/Ampere/AmperePlatformPkg/Drivers/UsbCdcEthernetDxe/UsbCdcEthernetDxe.inf
+    # For the Redfish USB CDC connection to the BMC
+    Platform/Ampere/AmperePlatformPkg/Drivers/UsbCdcEthernetDxe/UsbCdcEthernetDxe.inf
+  !endif
 
   #
   # VGA Aspeed
@@ -245,9 +243,10 @@
   # SMBIOS
   #
   MdeModulePkg/Universal/SmbiosDxe/SmbiosDxe.inf
+  ArmPkg/Universal/Smbios/ProcessorSubClassDxe/ProcessorSubClassDxe.inf
+  ArmPkg/Universal/Smbios/SmbiosMiscDxe/SmbiosMiscDxe.inf
   Platform/Ampere/ComHpcAltPkg/Drivers/SmbiosPlatformDxe/SmbiosPlatformDxe.inf
-  Platform/Ampere/JadePkg/Drivers/SmbiosCpuDxe/SmbiosCpuDxe.inf
-  Platform/Ampere/JadePkg/Drivers/SmbiosMemInfoDxe/SmbiosMemInfoDxe.inf
+  Silicon/Ampere/AmpereSiliconPkg/Drivers/SmbiosBlobsTransferDxe/SmbiosBlobsTransferDxe.inf
 
   #
   # Firmware Capsule Update
@@ -257,6 +256,11 @@
   SignedCapsulePkg/Universal/SystemFirmwareUpdate/SystemFirmwareReportDxe.inf
   SignedCapsulePkg/Universal/SystemFirmwareUpdate/SystemFirmwareUpdateDxe.inf
   MdeModulePkg/Application/CapsuleApp/CapsuleApp.inf
+
+  #
+  # IPMI Utilities
+  #
+  Silicon/Ampere/AmpereSiliconPkg/Application/IpmiUtil/IpmiUtilDynamicCommand.inf
 
   #
   # EnrollAmpereSecureKey
@@ -275,7 +279,9 @@
   Silicon/Ampere/AmpereAltraPkg/Drivers/PcieDeviceConfigDxe/PcieDeviceConfigDxe.inf
   Silicon/Ampere/AmpereSiliconPkg/Drivers/BmcInfoScreenDxe/BmcInfoScreenDxe.inf
   Silicon/Ampere/AmpereAltraPkg/Drivers/RootComplexConfigDxe/RootComplexConfigDxe.inf
+!if $(HARDWARE_MONITOR_ENABLE) == TRUE
   Platform/Ampere/ComHpcAltPkg/Drivers/HardwareMonitorDxe/HwMonitorDxe.inf
+!endif
 
   #
   # Misc
