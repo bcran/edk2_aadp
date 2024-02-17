@@ -8,9 +8,6 @@
 [submodule "edk2"]
 	path = edk2
 	url = https://github.com/ADLINK/edk2.git
-[submodule "edk2-ampere-tools"]
-	path = edk2-ampere-tools
-	url = https://github.com/ADLINK/edk2-ampere-tools.git
 [submodule "edk2_adlink-ampere-altra"]
 	path = edk2_adlink-ampere-altra
 	url = https://github.com/ADLINK/edk2_adlink-ampere-altra.git
@@ -20,3 +17,5 @@
 [submodule "unicorn"]
 	path = unicorn
 	url = https://github.com/intel/unicorn-for-efi.git
+[submodule "edk2-ampere-tool"]
+	url = https://github.com/AmpereComputing/edk2-ampere-tools
