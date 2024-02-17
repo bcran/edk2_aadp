@@ -2,15 +2,9 @@
 
 set -e
 
-# This script is messier than needed because it was built by
-# copying the commands that the Makefile-based build ran. I'll
-# remove unncessary steps and improve the layout over time.
-
 ATF_SLIM=$PWD/altra_atf_signed_2.10.20230517.slim
 SCP_SLIM=$PWD/altra_scp_signed_2.10.20230517.slim
 SPI_SIZE_MB=32
-
-. ./fw_ver UPDATE
 
 BOARD_NAME=ComHpcAlt
 OUTPUT_BIN_DIR=$PWD/Build/${BOARD_NAME}
@@ -19,13 +13,6 @@ SCRIPTS_DIR=$PWD/edk2-ampere-tools/
 EDK_PLATFORMS_PKG_DIR=$PWD/edk2-platforms/Platform/Ampere/${BOARD_NAME}Pkg
 OUTPUT_BOARD_SETTINGS_BIN=${OUTPUT_BIN_DIR}/$(basename ${BOARD_SETTINGS_CFG}).bin
 
-mkdir -p ${OUTPUT_BIN_DIR}
-cp -v ${BOARD_SETTINGS_CFG} ${OUTPUT_BIN_DIR}/$(basename ${BOARD_SETTINGS_CFG}).txt
-python3 ${SCRIPTS_DIR}/nvparam.py -f ${BOARD_SETTINGS_CFG} -o ${OUTPUT_BOARD_SETTINGS_BIN}
-rm -fv ${OUTPUT_BOARD_SETTINGS_BIN}.padded
-
-PATH=../arm-trusted-firmware/tools/cert_create:../arm-trusted-firmware/tools/fiptool:$PATH
-
 TOOLCHAIN=GCC
 BLDTYPE=DEBUG
 BUILD_THREADS=$(getconf _NPROCESSORS_ONLN)
@@ -33,6 +20,47 @@ export GCC_AARCH64_PREFIX=aarch64-linux-gnu-
 export WORKSPACE=$PWD
 export PACKAGES_PATH=$PWD/adlink-platforms:$PWD/edk2-platforms:$PWD/edk2_adlink-ampere-altra:$PWD/OpenPlatformPkg:$PWD/edk2-platforms/Features/Intel/Debugging:$PWD/edk2-platforms/Features:$PWD/edk2-platforms/Features/Intel:$PWD/edk2:$PWD
 
+if [ ! -e ${ATF_SLIM} ]; then
+  echo "The TF-A (Trusted Firmware) binary ${ATF_SLIM} doesn't exist."
+  echo "Please download it from Ampere Customer Connect (https://amperecomputing.com/customer-connect)."
+  exit 1
+fi
+
+if [ ! -e ${SCP_SLIM} ]; then
+  echo "The SCP (System Control Processor) binary ${SCP_SLIM} doesn't exist."
+  echo "Please download it from Ampere Customer Connect (https://amperecomputing.com/customer-connect)."
+  exit 1
+fi
+
+if ! command -v cert_create >/dev/null 2>&1; then
+  echo "Could not find cert_create. Please install the arm-trusted-firmware-tools package."
+  exit 1
+fi
+
+if ! command -v fiptool >/dev/null 2>&1; then
+ echo "Could not find fiptool. Please install the arm-trusted-firmware-tools package."
+ exit 1
+fi
+
+if ! command -v ${GCC_AARCH64_PREFIX}gcc >/dev/null 2>&1; then
+  echo "Could not find ${GCC_AARCH64_PREFIX}gcc ."
+  echo "Please either install the gcc-aarch64-linux-gnu package if on a Debian-based distro, or"
+  echo "update the GCC_AARCH64_PREFIX line in this script to match the aarch64 compiler prefix on"
+  echo "your system."
+  exit 1
+fi
+
+if ! command -v python3 >/dev/null 2>&1; then
+  echo "Could not find python3. Please install the python3 package."
+  exit 1
+fi
+
+mkdir -p ${OUTPUT_BIN_DIR}
+cp -v ${BOARD_SETTINGS_CFG} ${OUTPUT_BIN_DIR}/$(basename ${BOARD_SETTINGS_CFG}).txt
+python3 ${SCRIPTS_DIR}/nvparam.py -f ${BOARD_SETTINGS_CFG} -o ${OUTPUT_BOARD_SETTINGS_BIN}
+rm -fv ${OUTPUT_BOARD_SETTINGS_BIN}.padded
+
+. ./fw_ver UPDATE
 . edk2/edksetup.sh
 
 build -a AARCH64 -t ${TOOLCHAIN} -p MultiArchUefiPkg/Emulator.dsc -b ${BLDTYPE}
