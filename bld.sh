@@ -11,8 +11,8 @@ tfa_usage () {
   echo
   echo "  git clone --depth 1 https://git.trustedfirmware.org/TF-A/trusted-firmware-a.git"
   echo "  pushd trusted-firmware-a"
-  echo "  make CC=cc fiptool"
-  echo "  make CC=cc certtool"
+  echo "  ${MAKE_COMMAND} CC=cc fiptool"
+  echo "  ${MAKE_COMMAND} CC=cc certtool"
   echo "  export PATH=\$PWD/tools/cert_create:\$PWD/tools/fiptool:\$PATH"
   echo "  popd"
   exit 1
@@ -34,7 +34,20 @@ BLDTYPE=RELEASE
 BUILD_THREADS=$(getconf _NPROCESSORS_ONLN)
 export PYTHON_COMMAND=python3
 export WORKSPACE=$PWD
-export PACKAGES_PATH=$PWD/edk2-platforms:$PWD/edk2-platforms/Platform/Ampere/ComHpcAltPkg:$PWD/OpenPlatformPkg:$PWD/edk2-platforms/Features/Intel/Debugging:$PWD/edk2-platforms/Features:$PWD/edk2-platforms/Features/Intel:$PWD/edk2:$PWD
+export PACKAGES_PATH=$PWD/edk2:$PWD:$PWD/edk2-platforms:$PWD/edk2-platforms/Platform/Ampere/ComHpcAltPkg:$PWD/OpenPlatformPkg:$PWD/edk2-platforms/Features/Intel/Debugging:$PWD/edk2-platforms/Features:$PWD/edk2-platforms/Features/Intel
+
+if [ `uname -o` = "FreeBSD" ]; then
+  MAKE_COMMAND=gmake
+  if ! command -v ${MAKE_COMMAND} >/dev/null 2>&1; then
+    echo "GNU make is required. Please install the gmake package."
+    exit 1
+  fi
+  mkdir bin || true
+  ln -sfv /usr/local/bin/make bin/${MAKE_COMMAND}
+  export PATH=$PWD/bin:$PATH
+else
+  MAKE_COMMAND=make
+fi
 
 if [ ! -e ${ATF_SLIM} ]; then
   echo "The TF-A (Trusted Firmware) binary ${ATF_SLIM} doesn't exist."
@@ -56,14 +69,6 @@ if ! command -v fiptool >/dev/null 2>&1; then
   tfa_usage
 fi
 
-if ! command -v ${GCC_AARCH64_PREFIX}gcc >/dev/null 2>&1; then
-  echo "Could not find ${GCC_AARCH64_PREFIX}gcc ."
-  echo "Please either install the gcc-aarch64-linux-gnu package if on a Debian-based distro, or"
-  echo "update the GCC_AARCH64_PREFIX line in this script to match the aarch64 compiler prefix on"
-  echo "your system."
-  exit 1
-fi
-
 if ! command -v python3 >/dev/null 2>&1; then
   echo "Could not find python3. Please install the python3 package."
   exit 1
@@ -82,6 +87,8 @@ while true; do
     *) echo "Internal error!"; exit 1;;
   esac
 done
+
+eval set -- ""
 
 case `uname -m` in
   "x86_64")
