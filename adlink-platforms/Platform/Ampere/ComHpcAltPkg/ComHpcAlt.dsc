@@ -157,6 +157,8 @@
   # point only, for entry point versions >= 3.0.
   gEfiMdeModulePkgTokenSpaceGuid.PcdSmbiosEntryPointProvideMethod|0x2
 
+  gAmpereTokenSpaceGuid.PcdPlatformNumProcessorSockets|1
+
   #
   # Increasing the maximum size of capsule is to cover ARM Trusted Firmware binaries
   #
@@ -185,6 +187,7 @@
 
 [PcdsDynamicDefault.common.DEFAULT]
   # SMBIOS Type 0 - BIOS Information
+  gEfiMdeModulePkgTokenSpaceGuid.PcdFirmwareVendor|L"ADLINK"
   gEfiMdeModulePkgTokenSpaceGuid.PcdFirmwareReleaseDateString|L"MM/DD/YYYY"
 
 [PcdsDynamicExDefault.common.DEFAULT]
