@@ -38,6 +38,7 @@ export PACKAGES_PATH=$PWD/edk2:$PWD:$PWD/edk2-platforms:$PWD/edk2-platforms/Plat
 
 if [ `uname -o` = "FreeBSD" ]; then
   MAKE_COMMAND=gmake
+  GETOPT_COMMAND=/usr/local/bin/getopt
   if ! command -v ${MAKE_COMMAND} >/dev/null 2>&1; then
     echo "GNU make is required. Please install the gmake package."
     exit 1
@@ -47,6 +48,7 @@ if [ `uname -o` = "FreeBSD" ]; then
   export PATH=$PWD/bin:$PATH
 else
   MAKE_COMMAND=make
+  GETOPT_COMMAND=getopt
 fi
 
 if [ ! -e ${ATF_SLIM} ]; then
@@ -74,7 +76,7 @@ if ! command -v python3 >/dev/null 2>&1; then
   exit 1
 fi
 
-OPTIONS=`getopt -o t:b: --long toolchain:,build: -- "$@"`
+OPTIONS=`${GETOPT_COMMAND} -o t:b: --long toolchain:,build: -- "$@"`
 eval set -- "$OPTIONS"
 
 while true; do

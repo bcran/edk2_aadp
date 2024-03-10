@@ -14,6 +14,7 @@ The following tools are required to build the firmware:
     can build them from https://git.trustedfirmware.org/TF-A/trusted-firmware-a.git
   * Bash
   * GNU make
+  * GNU getopt
   * Python 3.x
 
 There are 2 files which are required to build the firmware, but which are only available from Ampere under NDA:
@@ -29,6 +30,9 @@ There are 2 files which are required to build the firmware, but which are only a
   
 ## Files
 * bld.sh: Script to build the ADLINK COM-HPC-ALT UEFI firmware.
+  Optional parameters:
+  * -t/--toolchain - Toolchain to use (GCC or CLANG)
+  * -b/--build - Build type (RELEASE or DEBUG)
 * IPMI scripts: define ${BMC\_IP}, ${BMC\_USER} and ${BMC\_PASS} to use them.
   * pon.sh: IPMI script to power on the system.
   * poff.sh: IPMI script to power off the system.
