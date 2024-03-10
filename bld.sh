@@ -18,7 +18,7 @@ BLDTYPE=DEBUG
 BUILD_THREADS=$(getconf _NPROCESSORS_ONLN)
 export GCC_AARCH64_PREFIX=aarch64-linux-gnu-
 export WORKSPACE=$PWD
-export PACKAGES_PATH=$PWD/adlink-platforms:$PWD/edk2-platforms:$PWD/edk2_adlink-ampere-altra:$PWD/OpenPlatformPkg:$PWD/edk2-platforms/Features/Intel/Debugging:$PWD/edk2-platforms/Features:$PWD/edk2-platforms/Features/Intel:$PWD/edk2:$PWD
+export PACKAGES_PATH=$PWD/adlink-platforms:$PWD/edk2-platforms:$PWD/OpenPlatformPkg:$PWD/adlink-platforms/Platform/Ampere/ComHpcAltPkg:$PWD/edk2-platforms/Features/Intel/Debugging:$PWD/edk2-platforms/Features:$PWD/edk2-platforms/Features/Intel:$PWD/edk2:$PWD
 
 if [ ! -e ${ATF_SLIM} ]; then
   echo "The TF-A (Trusted Firmware) binary ${ATF_SLIM} doesn't exist."
@@ -69,7 +69,6 @@ build -a AARCH64 -t ${TOOLCHAIN} -b ${BLDTYPE} -n ${BUILD_THREADS} \
         -D FIRMWARE_VER="${VER}-${BUILD} TF-A 2.10"                \
         -D MAJOR_VER=${MAJOR_VER} -D MINOR_VER=${MINOR_VER}        \
         -D SECURE_BOOT_ENABLE=TRUE               \
-        -D HARDWARE_MONITOR_ENABLE=TRUE          \
         -D NETWORK_ENABLE=TRUE                   \
         -D INCLUDE_TFTP_COMMAND=TRUE             \
         -D NETWORK_IP6_ENABLE=TRUE               \
@@ -117,6 +116,8 @@ build -a AARCH64 -t ${TOOLCHAIN} -b ${BLDTYPE} -n 8 \
 
 cp -vf Build/${BOARD_NAME}/${BLDTYPE}_${TOOLCHAIN}/FV/${BOARD_NAME^^}UEFIATFFIRMWAREUPDATECAPSULEFMPPKCS7.Cap ${OUTPUT_BASENAME}.cap
 cp -vf Build/${BOARD_NAME}/${BLDTYPE}_${TOOLCHAIN}/FV/JADESCPFIRMWAREUPDATECAPSULEFMPPKCS7.Cap ${OUTPUT_BIN_DIR}/${BOARD_NAME,,}_scp_upgrade.cap
+
+echo "Done. Firmware is in ${OUTPUT_BASENAME}.{bin,img,cap}"
 
 # ./flash.sh ${OUTPUT_BASENAME}.img
 
