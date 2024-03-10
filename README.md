@@ -1,49 +1,60 @@
-# Initialize Building Environment
+# Building the EDK2 UEFI firmware for ADLINK Ampere Altra Systems
 
-Ampere Mountain Jade code base & tools installation.
-* Copy 'setup.sh' to local machine and run. OS used for build environment is Ubuntu 20.04. 
-* Follow the instructions to install tools and download source code.
-* **3 files in AmpereAltra-ATF-SCP submodule you may not be able to access, if so, please get them from Ampere and place them as below:**
-    * *board_settings/jade_board_setting_\*.bin*
-    * *atf/altra_atf_signed_\*.slim*
-    * *scp/altra_scp_signed_\*.slim*
+## ADLINK COM-HPC-ALT code base & tools installation
 
-# Folders
-* .vscode: Visual Studio Code settings for tasks which link to bash scripts.
-* adlink-platforms: source of ADLINK.
-* **AmpereAltra-ATF-SCP**: Ampere ATF/SCP firmware, need authorization to get the content of https://github.com/ADLINK/AmpereAltra-ATF-SCP.git, or get them from Ampere.
-* edk2: a submodule from Ampere's edk2 branch.
-* edk2-ampere-tools: a submodule from edk2 fork of Ampere's edk2-ampere-tools.
-* edk2-platforms: a submodule from Ampere.
-* OpenPlatformPkg: a submodule from Linaro.
-* edk2_adlink-ampere-altra: common files of adlink ampere altra projects.
+To download the source code, run:
+```
+git clone --recursive https://github.com/bcran/edk2_aadp
+```
+
+The following tools are required to build the firmware:
+  * Compiler: at the moment only gcc is supported. Install the native gcc, and if cross-building also install the aarch64 package
+  * iasl: install the ACPI Component Architecture (ACPICA) tools
+  * cert_create and fiptool. These may be found in packages in your distro (e.g. arm-trusted-firmware-tools) or you
+    can build them from https://git.trustedfirmware.org/TF-A/trusted-firmware-a.git
+  * Bash
+  * GNU make
+  * Python 3.x
+
+There are 2 files which are required to build the firmware, but which are only available from Ampere under NDA:
+  * altra_atf_signed_\*.slim
+  * altra_scp_signed_\*.slim
+
+## Folders
+* .vscode: Visual Studio Code settings for tasks which link to bash scripts
+* edk2: a submodule from the TianoCore project
+* edk2-ampere-tools: a submodule from edk2 fork of Ampere's edk2-ampere-tools
+* edk2-platforms: a submodule from Ampere
+* OpenPlatformPkg: a submodule from Linaro, required for the Renesas USB firmware
   
-# Files
-* make_ComHpcAlt.sh: Sample script to make ADLINK COM-HPC-ALT.
-* make_jade.sh: Sample script to make CRB Ampere Mt. Jade.
-* setup.sh: A sample script to install all source code and tools. Mind your own SSH connection setting if there is any.
-    * *setup.sh [TARGET_FOLDER, default=edk2_aadp]*
+## Files
+* bld.sh: Script to build the ADLINK COM-HPC-ALT UEFI firmware.
+* IPMI scripts: define ${BMC\_IP}, ${BMC\_USER} and ${BMC\_PASS} to use them.
+  * pon.sh: IPMI script to power on the system.
+  * poff.sh: IPMI script to power off the system.
+  * pstatus.sh: IPMI script to fetch the power status of the system.
+* flash.sh: Script which uses the Linux Dediprog software to flash the firmware to a SPI-NOR EEPROM.
 
-# Building EDK-II image
+## Building EDK2 image
 
 1. Enter into working directory.
 
 2. Execute the below command to build EDK-II image for COM-HPC-ALT
 
    ```
-   . make_[Board].sh
+   ./bld.sh
    ```
 
-3. After successful compilation, the final EDK-II image **[Board]_tianocore_atf_*.cap** will be found in below path
+3. After successful compilation, the final EDK2 image **comhpcalt_tianocore_tfa_*.cap** will be found in below path:
 
    ```
-   $PWD/BUILDS/[Board]_tianocore_atf_*/
+   $PWD/Build/ComHpcAlt/comhpcalt_tianocore_tfa_{debug,release}_{date}-{build-number}.{cap,bin.img}
    ```
 
 # Flashing SCP/EDK-II
-* Following Capsule update steps works for v2.04.100.00 or later version, follow the instruction in release package to update BIOS otherwise.
+* Following Capsule update steps works for v0.1-bexcran or later version, follow the instruction in release package to update BIOS otherwise.
 
-1. Copy **CapsuleApp.efi** , **BoardVersion.efi**, **[Board]_scp_*.cap** , **[Board]_tianocore_atf_*.cap** files from path *$PWD/BUILDS/[Board]_tianocore_atf_*/* into FAT32 USB and connect to target board.
+1. Copy **CapsuleApp.efi** , **BoardVersion.efi**, **comhpcalt_scp_*.cap** , **comhpcalt_tianocore_tfa_*.cap** files from path *$PWD/Build/ComHpcAlt/* into FAT32 USB and connect to target board.
 
 2. Power up the target and boot into UEFI shell. 
 
@@ -59,13 +70,13 @@ Ampere Mountain Jade code base & tools installation.
 4. Run below command to flash SCP FW.
 
    ```
-   CapsuleApp.efi [Board]_scp_*.cap
+   CapsuleApp.efi comhpcalt_scp_*.cap
    ```
 
-5. Run below command to flash EDK-II FW v* (this includes ATF + UEFI + BoardSettings).
+5. Run below command to flash EDK2 FW v* (this includes TF-A + UEFI + BoardSettings).
 
    ```
-   CapsuleApp.efi [Board]_tianocore_atf_*.cap
+   CapsuleApp.efi comhpcalt_tianocore_tfa_*.cap
    ```
 
 6. Power cycle the target board.
@@ -73,18 +84,6 @@ Ampere Mountain Jade code base & tools installation.
 NOTE:
 
 - The target board by default should have EDK-II firmware version greater than or equal to v2.04.100.00 (which will support capsule update).
-
-### Flashing Capsule Supported EDK-II Firmware
-
-1. Go to [Ask a Expert page](https://www.adlinktech.com/en/Askanexpert) or [AVA Developer Platform Forum](https://www.ipi.wiki/community/forum/ava-developer-platform) where you can request us and then we will provide the download link
-2. Download & Unzip into FAT32 USB device.
-3. Boot into UEFI shell
-4. Run fwu.nsh to flash EDK-II to v2.04.100.00 which will support capsule update.
-5. Power cycle the target board.
-
-NOTE: 
-
-- The above steps required only when the target is having EDK-II firmware version lesser than v2.04.100.00.
 
 # POST code: Below list is utilized from Intel platform, could be refined if needed.
 * Progress Map \
