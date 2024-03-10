@@ -8,5 +8,6 @@
         "**/toolchain/**": true,
         "Build/**": true,
         "BUILDS/**": true
-    }
+    },
+    "cmake.configureOnOpen": false
 }
