@@ -2,23 +2,39 @@
 
 set -e
 
+tfa_usage () {
+  echo -n "cert_create or fiptool could not be found. If running on a "
+  echo -n "Debian-based distro (e.g. Ubuntu) you can get them by "
+  echo    "installing the arm-trusted-firmware-tools package."
+  echo -n "Otherwise, you can build them and add them to the \$PATH by "
+  echo    "running the following commands:"
+  echo
+  echo "  git clone --depth 1 https://git.trustedfirmware.org/TF-A/trusted-firmware-a.git"
+  echo "  pushd trusted-firmware-a"
+  echo "  make CC=cc fiptool"
+  echo "  make CC=cc certtool"
+  echo "  export PATH=\$PWD/tools/cert_create:\$PWD/tools/fiptool:\$PATH"
+  echo "  popd"
+  exit 1
+}
+
 ATF_SLIM=$PWD/altra_atf_signed_2.10.20230517.slim
 SCP_SLIM=$PWD/altra_scp_signed_2.10.20230517.slim
 SPI_SIZE_MB=32
 
 BOARD_NAME=ComHpcAlt
 OUTPUT_BIN_DIR=$PWD/Build/${BOARD_NAME}
-BOARD_SETTINGS_CFG=adlink-platforms/Platform/Ampere/${BOARD_NAME}Pkg/${BOARD_NAME}BoardSetting.cfg
+BOARD_SETTINGS_CFG=edk2-platforms/Platform/Ampere/${BOARD_NAME}Pkg/${BOARD_NAME}BoardSetting.cfg
 SCRIPTS_DIR=$PWD/edk2-ampere-tools/
 EDK_PLATFORMS_PKG_DIR=$PWD/edk2-platforms/Platform/Ampere/${BOARD_NAME}Pkg
 OUTPUT_BOARD_SETTINGS_BIN=${OUTPUT_BIN_DIR}/$(basename ${BOARD_SETTINGS_CFG}).bin
 
 TOOLCHAIN=GCC
-BLDTYPE=DEBUG
+BLDTYPE=RELEASE
 BUILD_THREADS=$(getconf _NPROCESSORS_ONLN)
-export GCC_AARCH64_PREFIX=aarch64-linux-gnu-
+export PYTHON_COMMAND=python3
 export WORKSPACE=$PWD
-export PACKAGES_PATH=$PWD/adlink-platforms:$PWD/edk2-platforms:$PWD/OpenPlatformPkg:$PWD/adlink-platforms/Platform/Ampere/ComHpcAltPkg:$PWD/edk2-platforms/Features/Intel/Debugging:$PWD/edk2-platforms/Features:$PWD/edk2-platforms/Features/Intel:$PWD/edk2:$PWD
+export PACKAGES_PATH=$PWD/edk2-platforms:$PWD/edk2-platforms/Platform/Ampere/ComHpcAltPkg:$PWD/OpenPlatformPkg:$PWD/edk2-platforms/Features/Intel/Debugging:$PWD/edk2-platforms/Features:$PWD/edk2-platforms/Features/Intel:$PWD/edk2:$PWD
 
 if [ ! -e ${ATF_SLIM} ]; then
   echo "The TF-A (Trusted Firmware) binary ${ATF_SLIM} doesn't exist."
@@ -33,13 +49,11 @@ if [ ! -e ${SCP_SLIM} ]; then
 fi
 
 if ! command -v cert_create >/dev/null 2>&1; then
-  echo "Could not find cert_create. Please install the arm-trusted-firmware-tools package."
-  exit 1
+  tfa_usage
 fi
 
 if ! command -v fiptool >/dev/null 2>&1; then
- echo "Could not find fiptool. Please install the arm-trusted-firmware-tools package."
- exit 1
+  tfa_usage
 fi
 
 if ! command -v ${GCC_AARCH64_PREFIX}gcc >/dev/null 2>&1; then
@@ -53,6 +67,33 @@ fi
 if ! command -v python3 >/dev/null 2>&1; then
   echo "Could not find python3. Please install the python3 package."
   exit 1
+fi
+
+OPTIONS=`getopt -o t:b: --long toolchain:,build: -- "$@"`
+eval set -- "$OPTIONS"
+
+while true; do
+  case "$1" in
+    -t|--toolchain)
+      TOOLCHAIN=$2; shift 2;;
+    -b|--build)
+      BLDTYPE=$2; shift 2;;
+    --) shift; break;;
+    *) echo "Internal error!"; exit 1;;
+  esac
+done
+
+case `uname -m` in
+  "x86_64")
+    if [ "$TOOLCHAIN" = "GCC" -a -z ${GCC_AARCH64_PREFIX} ]; then
+      echo "Error: need to define \$GCC_AARCH64_PREFIX since the native compiler won't work"
+      exit 1
+    fi
+    ;;
+esac
+
+if [ ${TOOLCHAIN} = "CLANG" ]; then
+  TOOLCHAIN=CLANGDWARF
 fi
 
 mkdir -p ${OUTPUT_BIN_DIR}
