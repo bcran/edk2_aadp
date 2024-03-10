@@ -39,12 +39,16 @@ export PACKAGES_PATH=$PWD/edk2:$PWD:$PWD/edk2-platforms:$PWD/edk2-platforms/Plat
 if [ `uname -o` = "FreeBSD" ]; then
   MAKE_COMMAND=gmake
   GETOPT_COMMAND=/usr/local/bin/getopt
+  if ! command -v ${GETOPT_COMMAND} >/dev/null 2>&1; then
+    echo "GNU getopt is required. Please install the getopt package."
+    exit 1
+  fi
   if ! command -v ${MAKE_COMMAND} >/dev/null 2>&1; then
     echo "GNU make is required. Please install the gmake package."
     exit 1
   fi
   mkdir bin || true
-  ln -sfv /usr/local/bin/make bin/${MAKE_COMMAND}
+  ln -sfv /usr/local/bin/gmake bin/make
   export PATH=$PWD/bin:$PATH
 else
   MAKE_COMMAND=make
