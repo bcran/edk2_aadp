@@ -328,8 +328,7 @@ APRIORI DXE {
   #
   !if $(NETWORK_ENABLE) == TRUE
     INF Platform/Ampere/AmperePlatformPkg/Drivers/GigUndiDxe/GigUndiDxe.inf
-
-    INF Platform/Ampere/AmperePlatformPkg/Drivers/UsbCdcEthernetDxe/UsbCdcEthernetDxe.inf
+    INF MdeModulePkg/Bus/Usb/UsbNetwork/UsbCdcEcm/UsbCdcEcm.inf
   !endif
 
   #
