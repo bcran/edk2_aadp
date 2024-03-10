@@ -147,7 +147,6 @@ dd conv=notrunc bs=1M seek=4 if=${OUTPUT_BASENAME}.img of=${OUTPUT_BASENAME}.bin
 
 mkdir -p Build/${BOARD_NAME} || true
 cp -vf ${OUTPUT_BASENAME}.img Build/${BOARD_NAME}/${BOARD_NAME}_tianocore_tfa.img
-cp -vf $SCP_SLIM Build/${BOARD_NAME}/${BOARD_NAME}_scp.slim
 
 # Build the capsule (for upgrading from the UEFI Shell or Linux)
 build -a AARCH64 -t ${TOOLCHAIN} -b ${BLDTYPE} -n 8 \
