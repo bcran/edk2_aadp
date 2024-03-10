@@ -16,7 +16,7 @@
 [Defines]
   INF_VERSION                    = 0x00010005
   BASE_NAME                      = BoardVersion
-  MODULE_UNI_FILE                = BoardVersion.uni
+#  MODULE_UNI_FILE                = BoardVersion.uni
   FILE_GUID                      = 83BB3629-C4DF-4345-8A06-0C960a2B5EEC
   MODULE_TYPE                    = UEFI_APPLICATION
   VERSION_STRING                 = 1.0
@@ -35,7 +35,7 @@
 
 [Sources]
   BoardVersion.c
-  BoardVersion.uni
+#  BoardVersion.uni
 
 [Packages]
   MdePkg/MdePkg.dec
