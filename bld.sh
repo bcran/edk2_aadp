@@ -18,6 +18,16 @@ tfa_usage () {
   exit 1
 }
 
+usage () {
+  echo "Usage:"
+  echo "  $0 [options]"
+  echo
+  echo "Options:"
+  echo "  -b <bldtype>, --build <bldtype>  Specify the build type: DEBUG or RELEASE"
+  echo "  -t <tc>, --toolchain <tc>        Specify the toolchain to use: GCC or CLANG"
+  exit 0
+}
+
 ATF_SLIM=$PWD/altra_atf_signed_2.10.20230517.slim
 SCP_SLIM=$PWD/altra_scp_signed_2.10.20230517.slim
 SPI_SIZE_MB=32
@@ -80,7 +90,7 @@ if ! command -v python3 >/dev/null 2>&1; then
   exit 1
 fi
 
-OPTIONS=`${GETOPT_COMMAND} -o t:b: --long toolchain:,build: -- "$@"`
+OPTIONS=`${GETOPT_COMMAND} -o t:b:h --long toolchain:,build:,help -- "$@"`
 eval set -- "$OPTIONS"
 
 while true; do
@@ -89,6 +99,8 @@ while true; do
       TOOLCHAIN=$2; shift 2;;
     -b|--build)
       BLDTYPE=$2; shift 2;;
+    -h|--help)
+      usage; shift 2;;
     --) shift; break;;
     *) echo "Internal error!"; exit 1;;
   esac
@@ -113,6 +125,8 @@ mkdir -p ${OUTPUT_BIN_DIR}
 cp -v ${BOARD_SETTINGS_CFG} ${OUTPUT_BIN_DIR}/$(basename ${BOARD_SETTINGS_CFG}).txt
 python3 ${SCRIPTS_DIR}/nvparam.py -f ${BOARD_SETTINGS_CFG} -o ${OUTPUT_BOARD_SETTINGS_BIN}
 rm -fv ${OUTPUT_BOARD_SETTINGS_BIN}.padded
+
+make -C edk2/BaseTools -j ${BUILD_THREADS}
 
 . ./fw_ver UPDATE
 . edk2/edksetup.sh
