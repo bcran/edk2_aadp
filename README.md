@@ -4,7 +4,12 @@
 
 To download the source code, run:
 ```
-git clone --recursive https://github.com/bcran/edk2_aadp
+git clone https://github.com/bcran/edk2_aadp
+cd edk2_aadp
+git submodule update --init
+pushd edk2
+git submodule update --init
+popd
 ```
 
 The following tools are required to build the firmware:
